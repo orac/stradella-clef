@@ -1,0 +1,32 @@
+---
+// The download link for the library itself.
+//
+// The file is served straight out of public/, where scripts/sync-library.mjs
+// copies it from the repository root at build time, so this link always offers
+// exactly the committed file.
+//
+// Joining the URL lives here rather than in the pages because Astro's BASE_URL
+// carries a trailing slash in some configurations and not others, and getting
+// it wrong yields a 404 that only shows up once deployed.  One place to be
+// wrong is better than several.
+const { label = 'Download stradella-clef.ly' } = Astro.props;
+
+const href = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/stradella-clef.ly`;
+---
+
+<a class="download-library" href={href} download>{label}</a>
+
+<style>
+  .download-library {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    background: var(--sl-color-accent);
+    color: var(--sl-color-white);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .download-library:hover {
+    background: var(--sl-color-accent-high);
+  }
+</style>

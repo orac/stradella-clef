@@ -1,0 +1,60 @@
+---
+title: Using the library
+description: Download stradella-clef.ly, include it in a score, and write basslines as the buttons you press.
+---
+
+import DownloadLibrary from '../../components/DownloadLibrary.astro';
+
+## Get it
+
+<DownloadLibrary />
+
+Save it next to your score and include it:
+
+```lilypond
+\include "stradella-clef.ly"
+```
+
+That is the whole installation: LilyPond searches the score's own directory
+first, so there are no include paths to configure.
+
+{/* TODO: the alternatives --- putting it on the include path for every score,
+    and cloning the repository to track changes. Keep them below the one-file
+    story, not beside it. */}
+
+Requires LilyPond 2.24.3 or newer.
+
+## The board
+
+{/* TODO: columns are the circle of fifths, rows are the commands. The table from
+    stradella-clef.md drops in here more or less unchanged. */}
+
+## Writing a bassline
+
+{/* TODO: worked examples. These are the fences to fill --- once there is a
+    component that engraves them, each of these grows an example of its output
+    underneath. */}
+
+```lilypond
+% TODO
+```
+
+## Getting the three engravings
+
+{/* TODO: \clef stradella, \stradellaTriads, \stradellaSymbols. The three-way
+    comparison is the payoff of the whole library, so this section wants the
+    engraved output more than any other. */}
+
+```lilypond
+% TODO
+```
+
+## Migrating from stradella.ly
+
+{/* TODO: the five numbered steps from stradella-clef.md. Step 4, adding row
+    commands to notes that relied on their octave, is the one that bites, so
+    give it its own callout. */}
+
+## Wrinkles
+
+{/* TODO: MIDI, and three note heads on one line. */}

@@ -1,0 +1,17 @@
+{
+  "name": "stradella-clef-site",
+  "type": "module",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "sync-library": "node scripts/sync-library.mjs",
+    "dev": "npm run sync-library && astro dev",
+    "build": "npm run sync-library && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.42.0",
+    "astro": "^7.2.10"
+  }
+}

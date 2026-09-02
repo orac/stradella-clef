@@ -1,0 +1,49 @@
+---
+title: Stradella clef
+description: A tabular notation for the Stradella bass of an accordion, for LilyPond.
+template: splash
+hero:
+  tagline: Write the buttons you press. Engrave them however you like.
+  actions:
+    # Starlight applies `base` to sidebar links but NOT to hero action links,
+    # so this one has to spell the prefix out. Keep it in step with BASE in
+    # astro.config.mjs.
+    - text: Using the library
+      link: /stradella-clef/using/
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/USER/stradella-clef
+      icon: external
+      variant: minimal
+---
+
+import { CardGrid, Card } from '@astrojs/starlight/components';
+
+{/* TODO: the "why should I want this?" argument. Some notes on what it needs to do:
+
+  - Open with the problem, not the solution. A Stradella player presses one
+    button; ordinary notation makes you write out a triad and then read it back
+    as a button. The notation is describing the sound, not the instrument.
+
+  - Show, don't tell. The same bar engraved both ways, side by side, is the
+    argument. Words are the caption.
+
+  - Say who it is not for. Anyone reading the bass line as pitches rather than
+    as buttons wants ordinary notation, and this library will still give them
+    that from the same source. That is the reassuring bit, so do not bury it.
+*/}
+
+<CardGrid>
+  <Card title="TODO: the problem" icon="warning">
+    What is wrong with writing Stradella bass in ordinary notation.
+  </Card>
+  <Card title="TODO: the idea" icon="approve-check">
+    Position is the circle of fifths; colour and shape are the row.
+  </Card>
+  <Card title="TODO: one source, three scores" icon="document">
+    The same input engraves as tablature or as ordinary notation.
+  </Card>
+  <Card title="TODO: what it costs you" icon="setting">
+    One file, one `\include`, no install.
+  </Card>
+</CardGrid>
