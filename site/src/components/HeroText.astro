@@ -1,0 +1,59 @@
+---
+/**
+ * HeroText — a full-bleed display statement for MDX prose.
+ *
+ * Lifts a single sentence out of the body column and sets it as a Fraunces
+ * display line on a full-viewport indigo band. Use it for the one line a
+ * piece pivots on — a thesis, a call to action — not for headings (those
+ * are what h2/h3 are for).
+ *
+ * ## Usage in MDX
+ *   import HeroText from '../../components/HeroText.astro';
+ *
+ *   <HeroText>Find your ticklish spots, and find new ways to tickle them.</HeroText>
+ *
+ * ## Full-bleed geometry
+ * The prose column (.prose) is --prose-width wide and centred, so its own
+ * width is the 100% that margins resolve against. `margin-inline: calc(50% - 50vw)`
+ * pulls each edge back to the viewport edge and `width: 100vw` fills it.
+ * body carries `overflow-x: clip` (global.css) so the 100vw band never adds
+ * a horizontal scrollbar when a vertical one is present.
+ *
+ * The text itself is capped at a readable measure and centred within the band;
+ * the band is full width, the line is not.
+ */
+---
+
+<div class="hero-text">
+    <div class="hero-text__inner">
+        <slot />
+    </div>
+</div>
+
+<style>
+    .hero-text {
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+        margin-block: clamp(2rem, 5vw, 3.5rem);
+        padding: clamp(1.75rem, 4vw, 3rem) var(--prose-padding-x);
+        background: var(--accent);
+        text-align: center;
+    }
+
+    .hero-text__inner {
+        max-width: min(90vw, 20em);
+        margin-inline: auto;
+        font-family: var(--font-fraunces), Georgia, serif;
+        font-weight: 800;
+        font-size: clamp(1.8rem, 3vw + 0.75rem, 2.9rem);
+        line-height: 1.12;
+        letter-spacing: -0.02em;
+        color: var(--paper);
+        text-wrap: balance;
+    }
+
+    /* MDX wraps slot text in <p>; drop its margins so the band stays centred. */
+    .hero-text__inner :global(p) {
+        margin: 0;
+    }
+</style>

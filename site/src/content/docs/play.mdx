@@ -1,0 +1,259 @@
+---
+title: How to read and play Stradella clef
+description: Play your first Stradella clef bassline
+---
+import Snippet from '../../components/Snippet.astro';
+
+Whether you're an **expert player** or a **new player** who hasn't learned bass clef yet, after reading this page you'll be able to play basslines with Stradella clef. If you have your instrument to hand, try playing along with the examples.
+
+## The clef itself
+<Snippet context="score">
+```lilypond
+\new PianoStaff <<
+    \new Staff {
+        \clef treble
+        R1
+    }
+    \new StradellaStaff {
+        \clef stradella
+        R1
+    }
+>>
+```
+</Snippet>
+
+Stradella clef is marked by this S-shaped clef. You can mix and match Stradella clef and bass clef in the same part, for example for free bass music.
+
+## Arrangement of notes
+
+In most sheet music, the notes are arranged **in order of pitch**. Low notes at the bottom, high notes at the top.
+
+<Snippet>
+```lilypond
+\clef treble \relative c' { c4 d e f g a b c }
+```
+</Snippet>
+
+This is easy on the right-hand of a piano accordion, where the notes are also arranged in order of pitch, but on your left hand, the notes follow the cycle of fifths. So in Stradella clef, the notes also go that way. **C is on the middle line.** Most instruments have a dimple or some other mark on the C bass button.
+
+<Snippet>
+```lilypond
+\clef stradella c4
+```
+</Snippet>
+
+The next button above the C is G, so the next space in the staff above the C is G, and so on.
+
+<Snippet>
+```lilypond
+\clef stradella c4^"C" g^"G" d^"D" a^"A" e^"E"
+```
+</Snippet>
+
+The **E is on the top line**, and your instrument might also mark it with a textured button. You can probably guess what happens when you go the other way: they also follow the buttons.
+
+<Snippet>
+```lilypond
+\clef stradella c4^"C" f^"F" bf^"B♭" ef^"E♭" af^"A♭"
+```
+</Snippet>
+
+If your A♭ button is also textured like the E, the top and bottom lines are landmarks for your fingers.
+
+Notice there's no flat signs in the music for B♭, E♭, A♭. Stradella clef has **no sharp or flat signs**. In normal notation, C major is privileged and you need to add sharp and flat signs to get notes from other scales. But Stradella bass is *isomorphic* (every scale is the same shape) so Stradella clef is too. No sharp or flat signs, no key signature, no accidentals.
+
+In treble clef, you might have learned mnemonics like Every Good Boy Deserves Football and FACE to remember which notes are on the lines and which ones are in the spaces. You may already have noticed that every second button on your bass board goes up a whole tone &mdash; thanks to the circle of fifths. Stradella clef has the same property, so you don't need a mnemonic to learn the notes. For the notes on the lines, start from a marked button (A♭, C, or E) and work up and down in whole tones. For the notes in the spaces, start from the F or G and work up and down in whole tones.
+
+<Snippet>
+```lilypond
+\time 7/4 \clef stradella
+gf4^"G♭" af^"A♭" bf^"B♭" c4^"C" d^"D" e^"E" fs^"F♯"
+\section
+df^"D♭" ef^"E♭" f^"F" g^"G" a^"A" b^"B" cs^"C♯"
+```
+</Snippet>
+
+Just like traditional notation, there are *leger lines* when you go off the top or bottom of the staff. You won't see them very often unless you play in keys with lots of sharps or flats.
+
+### Two buttons playing the same note
+
+Maybe you noticed that this example has some repeated notes: G♭ and F♯, D♭ and C♯ are both enharmonic pairs. Unless you're playing a 72 bass, your instrument has pairs of enharmonic buttons at the top and bottom of the board, and the notation copies it. You don't have to worry about whether your hand should be at the top or the bottom when you see a C♯: the person who wrote or arranged the music has already thought of it, and the music lets them tell you the answer.
+
+<Snippet>
+```lilypond
+\clef stradella
+df2_"D♭" cs2^"C♯"
+```
+</Snippet>
+
+## Chords
+
+You can't base your playing career on just root notes though, there's a world of chords out there. On the front page the promise is that Stradella clef removes the pain of decoding the chords. So here's all the standard chords from a six-row instrument:
+
+<Snippet>
+```lilypond
+\clef stradella
+\cadenzaOn
+c4^"root" s2 \maj c4^"Major" s2 \min c4^"minor" s2 \sev c4^"7" s2 \dimin c4^"diminished"
+```
+</Snippet>
+
+The most obvious thing is that they use **colour** to convey the information. The colours are from a standard set that's designed to be maximally distinguishable for people with different kinds of colour-blindness. Even so, some people can't see colours at all, so the same information is also conveyed by the **shape** of the notehead. And since the notehead is significant, here they are as whole notes (semibreves) with their unfilled noteheads:
+
+<Snippet>
+```lilypond
+\clef stradella
+c1^"root" \maj c^"M" \min c^"m" \sev c^"7" \dimin c^"dim"
+```
+</Snippet>
+
+Unlike the arrangement on the staff, this *is* something you have to learn, so I'll share the inspiration behind each one and perhaps that'll help you remember, but you can use whatever associations **make sense to you**.
+
+### Major
+
+Major chords are the most common. They're straight-up and plain, so of course they're squares, and people associate blue with businesslike.
+
+### Minor
+
+Minor chords can be more spiky, so a red triangular flag marks them out. They're the second most common after major chords, so these are the most distinguishable colours.
+
+If you quickly scan a sheet of music, those minor chords will stick out, both because of the spiky triangle, and because the red is so distinct next to black and dark blue.
+
+### Seventh
+
+The upright triangle here is based on the △ symbol comonly used in jazz sheets to indicate major seventh chords. Sevenths are a bright chord common in blues music, so a bright blue colour fits.
+
+### Diminished
+
+Diminished chords are the rarest, so how fitting they should be represented by a gem shape, and the pinkish colour that will make sure you see that one's coming up.
+
+## Counter-bass
+
+Traditional accordion notation reuses the legato sign as a fingering hint, to tell you when to play a note as the counterbass, but it still leaves you to work out where the counterbass is: an extra thing to learn, and an extra thing to distract you from playing. Do these pairs of notes *look* like they're next to each other? Do they look like they're the same shape?
+
+<Snippet>
+```lilypond
+\clef bass
+\time 2/4
+\fixed c, { c'4 e-- d fs-- g b-- bf d-- }
+```
+</Snippet>
+
+Stradella clef treats the counterbass row like the other rows, so the vertical position shows you the vertical position on the instrument, not what note name you're playing. The colour shows you *which row* to play. This is the same music as the last example.
+
+<Snippet>
+```lilypond
+\clef stradella
+\time 2/4
+c4 \cnt e d \cnt fs g \cnt b bf \cnt d
+```
+</Snippet>
+
+It's harder to tell that the root D (the third note) and the counterbass D (the last note) are the same note, but it's easier for the composer or arranger to give you fingering advice for a long run like a walking bass or a scale. There are many ways to play the same scale, and the best way leaves your hand in the right position for whatever notes are coming up next. Making the counterbass an explicit part of the notation means you can use the best fingering without having to look ahead as far to the later notes.
+
+For example, these two runs start with the same notes, but the last note requires a different hand position. You need to look ahead to know what fingerings to use, and it might trip you up when playing at sight. 
+
+<Snippet>
+```lilypond
+\clef bass
+\time 6/8
+\fixed c, { c8 d e f g af \section c d e f g a }
+```
+</Snippet>
+In Stradella clef, you can't immediately see that it's a scale (you will with a little practice!), but you *can* see from the overall shape where your hand needs to be to play it.
+<Snippet>
+```
+\clef stradella
+\time 6/8
+\fixed c, { c8 \cnt d \cnt e f \cnt g af \section c d \cnt e f g a }
+```
+</Snippet>
+
+
+## Putting it together
+
+Now you have everything you need to read and play Stradella clef, except time and practice.
+
+### Chord progressions
+
+Let's start by looking at a common I-IV-V alternating bass in different keys. Notice how in Stradella clef it's the same shape regardless of what key we're in.
+
+<Snippet>
+```lilypond
+\fixed c {
+\mark \markup "C major"
+\clef bass
+c4 \maj c g \maj c | f \maj f c \maj f | g \maj g d \maj g |
+\clef stradella
+c4 \maj c g \maj c | f \maj f c \maj f | g \maj g d \maj g |
+\break
+\mark \markup "F major"
+\key f \major
+\clef bass
+f \maj f c \maj f | bf \maj bf f \maj bf | c4 \maj c g \maj c |
+\clef stradella
+f \maj f c \maj f | bf \maj bf f \maj bf | c4 \maj c g \maj c |
+\break
+\mark \markup "A major"
+\key a \major
+\clef bass
+a \maj a e \maj a | d \maj d a \maj d | e \maj e b \maj e |
+\clef stradella
+a \maj a e \maj a | d \maj d a \maj d | e \maj e b \maj e |
+\break
+\mark \markup { A♭ major }
+\key af \major
+\clef bass
+af \maj af ef \maj af | df \maj df af \maj df | ef \maj ef bf \maj ef |
+\clef stradella
+af \maj af ef \maj af | df \maj df af \maj df | ef \maj ef bf \maj ef |
+}
+```
+</Snippet>
+
+Did you also notice how the first bar of the A and A♭ sections looked identical in bass clef, even though your hands were in quite different places? Traditional notation often makes different hand shapes look the same, and similar patterns look different. Stradella clef aims to make the same hand shape look the same. Every bar here is the same shape, just on a different note. This makes it easier to recognise, and easier to see when it changes to something different. For example, I like to vary the alternating bass by playing the third (counterbass) if the next chord is going to be up a fifth, like this:
+
+<Snippet>
+```lilypond
+\mark \markup "C major into G major"
+\clef bass
+c4 \maj c e \maj c | g \maj g d \maj g |
+\clef stradella
+c4 \maj c \cnt e \maj c | g \maj g d \maj g |
+```
+</Snippet>
+
+In Stradella clef, that counterbass note sticks out from the surrounding fifths. You can see at a glance which note is different from the alternating bass pattern. But in bass clef, you have to read every note to spot the difference, because the bass patttern is already a different shape for every root note.
+
+### Chord combining
+
+There are more chord shapes in music than the four common ones the instrument gives you. Advanced players use *chord combining* to play major sevenths, minor sevenths, ninths, and all kinds of interesting chords. For example, you can play this:
+
+<Snippet>
+```lilypond
+\clef bass
+c'4^"m7"
+```
+</Snippet>
+
+by pressing the C minor and E♭ major buttons together. This is considered an advanced technique because you have to learn what buttons to combine, but it's the same shape every time. G minor seventh is G minor plus B♭ major; D minor seventh is D minor plus F major, and so on, always the major three buttons down from the root.
+
+With Stradella clef, this is now a basic technique, because you don't have to learn it, the music just tells you:
+
+<Snippet>
+```lilypond
+\clef stradella
+<\min c \maj ef>4 <\min g \maj bf> <\min d \maj f>
+```
+</Snippet>
+
+It might look a little weird at first, because it's something completely new. Still, all you have to do is play the buttons it tells you.
+
+Also, music often wants you to play a root note at the same time as the same chord. Of course, that works too. Whether this is useful or not depends on whether the register has a different octave for the root notes compared to the chords: on some instruments they just sound the same reeds, others have different reeds for the root notes.
+
+<Snippet>
+```lilypond
+\clef stradella
+<c \maj c>2
+```
+</Snippet>

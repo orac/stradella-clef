@@ -36,6 +36,10 @@ jobs:
 
       - run: npm ci
 
+      # Snippet.astro engraves the notation examples during the build. Ubuntu
+      # 24.04 packages LilyPond 2.24.3, the oldest version the library supports.
+      - run: sudo apt-get update && sudo apt-get install -y lilypond
+
       # Builds the site, having first copied ../stradella-clef.ly into public/
       # so that the download link serves the committed file.
       - run: npm run build

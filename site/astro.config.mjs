@@ -1,17 +1,20 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { satteri } from '@astrojs/markdown-satteri';
+import snippetSource from './plugins/snippet-source.mjs';
 
-// GitHub Pages serves a project site from https://USER.github.io/REPO/, so every
+// GitHub Pages serves a project site from https://orac.github.io/REPO/, so every
 // internal link and asset URL has to carry that prefix.  Set both of these to
 // match the repository, or the deployed site will 404 on its own stylesheets.
 // A custom domain removes the need for `base` entirely.
-const SITE = 'https://USER.github.io';
+const SITE = 'https://orac.github.io';
 const BASE = '/stradella-clef';
 
 export default defineConfig({
   site: SITE,
   base: BASE,
   markdown: {
+    processor: satteri({ mdastPlugins: [snippetSource] }),
     shikiConfig: {
       // Shiki has no LilyPond grammar.  Scheme is a decent approximation --- the
       // interesting parts of a .ly file are Scheme anyway --- and mapping the
@@ -28,7 +31,7 @@ export default defineConfig({
         {
           icon: 'github',
           label: 'GitHub',
-          href: 'https://github.com/USER/stradella-clef',
+          href: 'https://github.com/orac/stradella-clef',
         },
       ],
       sidebar: [{ label: 'Using the library', link: '/using/' }],

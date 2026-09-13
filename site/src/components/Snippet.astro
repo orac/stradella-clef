@@ -1,0 +1,147 @@
+---
+/**
+ * Snippet — a fragment of music, engraved by LilyPond at build time and inlined as SVG.
+ *
+ * ## Usage in MDX
+ *   import Snippet from '../../components/Snippet.astro';
+ *
+ *   <Snippet>
+ *   ```lilypond
+ *   \clef stradella c4 \maj c g \maj c
+ *   ```
+ *   </Snippet>
+ *
+ * MDX would read LilyPond's { } and < > as JSX, so the music has to sit in a fence. plugins/snippet-source.mjs moves the fence's text into the `code` prop before the fence can be highlighted, so this component receives plain LilyPond source. An empty <Snippet></Snippet> renders nothing, so it can stand in for an example that's yet to be written.
+ *
+ * The music is placed inside `\new StradellaStaff { … }` in the template below, with the library included and English note names. Pass `context="score"` for a snippet that builds its own staves (e.g. a PianoStaff pairing StradellaStaff with a treble staff) — it gets just the shared header, not the StradellaStaff wrapper.
+ *
+ * ## Engraving
+ * LilyPond is found on PATH, or at $LILYPOND if that is set. SVGs are cached in node_modules/.cache/snippets under a hash of the complete input file and the library, so the dev server only re-engraves snippets that changed.
+ *
+ * A snippet LilyPond rejects fails the build. In dev, it shows LilyPond's log in place of the notation instead, so that one wrong note doesn't hide the whole page.
+ */
+import { execFile } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { promisify } from 'node:util';
+
+interface Props {
+  code?: string;
+  showSource?: boolean;
+  context?: 'staff' | 'score';
+}
+
+const { code = '', showSource = false, context = 'staff' } = Astro.props;
+
+// import.meta.url points into the bundle during a build, so find the repository from the working directory, which npm scripts set to site/.
+const repoRoot = resolve(process.cwd(), '..');
+
+// The library is included before \language so that it's parsed with the note names it was written in. The music gets lines of its own so that a trailing % comment can't swallow the closing brace.
+const preamble = String.raw`\version "2.24.3"
+\include "stradella-clef.ly"
+\language "english"
+\header { tagline = ##f }
+\paper { indent = 0 ragged-right = ##t print-page-number = ##f }
+`;
+
+// "staff" wraps the snippet in a bare StradellaStaff, for fragments of stradella notation on their own. "score" leaves the snippet to build its own \score or context structure, for snippets that already include a StradellaStaff alongside other staves.
+const source = context === 'score'
+  ? String.raw`${preamble}
+${code}
+`
+  : String.raw`${preamble}
+\new StradellaStaff {
+${code}
+}
+`;
+
+async function engrave() {
+  const dir = await mkdtemp(join(tmpdir(), 'snippet-'));
+  let log = '';
+  try {
+    await writeFile(join(dir, 'snippet.ly'), source);
+    ({ stderr: log } = await promisify(execFile)(
+      process.env.LILYPOND ?? 'lilypond',
+      ['-dbackend=svg', '-dcrop', '-dno-point-and-click', '-I', repoRoot, 'snippet.ly'],
+      { cwd: dir },
+    ));
+    // LilyPond can exit cleanly without drawing anything, so a missing SVG is reported with the log.
+    return await readFile(join(dir, 'snippet.cropped.svg'), 'utf8');
+  } catch (e: any) {
+    throw new Error(`LilyPond couldn't engrave this snippet:\n${code}\n\n${e.stderr ?? `${e.message}\n${log}`}`);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
+let svg: string | undefined;
+let error: string | undefined;
+if (code.trim()) {
+  const library = await readFile(join(repoRoot, 'stradella-clef.ly'), 'utf8');
+  const key = createHash('sha256').update(library).update(source).digest('hex').slice(0, 16);
+  const cacheDir = resolve('node_modules/.cache/snippets');
+  const cached = join(cacheDir, `${key}.svg`);
+  try {
+    svg = await readFile(cached, 'utf8');
+  } catch {
+    try {
+      svg = await engrave();
+      await mkdir(cacheDir, { recursive: true });
+      await writeFile(cached, svg);
+    } catch (e: any) {
+      if (import.meta.env.PROD) throw e;
+      console.error(e.message);
+      error = e.message;
+    }
+  }
+}
+---
+
+{svg && showSource && (
+  <div class="snippet-pair">
+    <pre class="snippet-source"><code>{code.trim()}</code></pre>
+    <div class="snippet" set:html={svg} />
+  </div>
+)}
+{svg && !showSource && <div class="snippet" set:html={svg} />}
+{error && <pre class="snippet-error">{error}</pre>}
+
+<style>
+  .snippet-pair {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .snippet-pair .snippet,
+  .snippet-pair .snippet-source {
+    flex: 1 1 20rem;
+    margin: 0;
+  }
+  .snippet-source {
+    padding: 0.75rem 1rem;
+    background: var(--sl-color-gray-6);
+    overflow-x: auto;
+  }
+  /* Paper and ink stay the same in dark mode. LilyPond draws in currentColor, so `color` sets the ink; the chord colours are explicit and unaffected. */
+  .snippet {
+    width: 100%;
+    max-width: 100%;
+    margin: 1rem auto;
+    padding: 0.75rem 1rem;
+    background: #faf7f0;
+    color: #000;
+  }
+  .snippet :global(svg) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+  .snippet-error {
+    border-inline-start: 0.25rem solid var(--sl-color-red);
+    white-space: pre-wrap;
+  }
+</style>

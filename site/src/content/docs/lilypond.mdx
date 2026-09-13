@@ -1,0 +1,143 @@
+---
+title: Using LilyPond
+description: Download stradella-clef.ly, include it in a score, and write three styles of notation from the same source.
+---
+import { Steps } from '@astrojs/starlight/components';
+import { SaveFile } from 'starlight-save-file-component';
+import Snippet from '../../components/Snippet.astro';
+
+# Writing accordion parts with LilyPond
+LilyPond is an open-source sheet music engraving software. Its main value is that insetad of a WYSIWYG editor where you have to drag things around to a good layout, and copy-paste repetitive music, you input just the music and LilyPond decides how to lay it out, with good spacing, no collisions, etc.
+
+The stradella-clef library for LilyPond lets you engrave **all three styles** of bass from a single source: full chords, single notes with text above, or the new Stradella clef. If you're using LilyPond for the first time, this video teaches you how to install it and write your first accordion part:
+
+<iframe width="100%" height="720" src="https://www.youtube.com/embed/UeBU0Bz2msU?si=bk84n9vsJA1c7Art" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+I use LilyPond to rewrite commercial sheet music and parts from my band in my choice of bass notation (which is always Stradella clef for me, but might be single notes with text labels for you). I find it takes 3-4 hours per piece on average (depending on how long the piece is). It then takes almost no time to fix any errors from the original part, add extra rehearsal marks or fingerings, or transpose it to a different key.
+
+Requires LilyPond 2.24.3 or newer.
+
+## Get the library
+<Steps>
+
+1. Save this file next to your score:
+
+    <SaveFile title="Download stradella-clef.ly" href="https://raw.githubusercontent.com/orac/stradella-clef/refs/heads/main/stradella-clef.ly" />
+
+2. Include it from your score:
+
+    ```lilypond
+    \include "stradella-clef.ly"
+    ```
+
+    LilyPond searches the score's folder for includes first, so you don't need to set any include paths. But if you want to store the library in one place and use it from any folder, you can use LilyPond's `-I` option.
+
+3. Replace the `Staff` context in your bass part with `StradellaStaff`:
+
+    ```lilypond
+    \new PianoStaff <<
+        \new Staff { ... treble music ... }
+        \new StradellaStaff { ... bass music ... }
+    >>
+    ```
+</Steps>
+
+## Selecting the style
+
+To use the new Stradella clef, just use `\clef stradella` instead of `\clef bass`. Don't bother with octave marks, because they aren't represented in the notation anyway.
+
+To use the two classical styles of notation, apply the `\stradellaTriads` or `\stradellaSymbols` functions to your music.
+
+<Snippet showSource>
+```lilypond
+\clef bass
+\stradellaTriads { c4 \maj c g \maj c }
+\section
+\stradellaSymbols { c4 \maj c g \maj c }
+```
+</Snippet>
+
+Both commands ignore the octave you write, and put root notes in the bottom half of the staff and chords in the top half, as is the convention. Don't use `\relative`, `\fixed` or `\transpose` around the command, or they will overwrite the octaves. 
+
+```lilypond
+% WRONG!
+\relative c, {
+    \stradellaTriads { c4 \maj c g \maj c }
+}
+```
+
+You can use `\transpose` *inside* the command (before it sets the octave) but **you don't need to use** `\relative` or `\fixed` at all.
+
+<Snippet showSource>
+```lilypond
+% GOOD
+\clef bass
+\stradellaTriads {
+    \transpose c d {
+        \key c \major
+        c4 \maj c g \maj c
+    }
+}
+```
+</Snippet>
+
+Though it's a music function like any other, it's probably easiest to use it in the `\score` block itself rather than on individual variable definitions. That way there's only one place to change styles. 
+
+```lilypond
+vocalPart = \relative c' { ... }
+treblePart = \relative c' { ... }
+bassPart = { ... }
+
+\score <<
+    \new Staff { \vocalPart }
+    \new PianoStaff <<
+        \new Staff { \treblePart }
+        \new StradellaStaff { \stradellaSymbols \bassPart }
+    >>
+>>
+```
+
+But if you want to mix and match the styles on different staves or in different sections, you can do that too.
+
+## Writing chords
+
+The library gives you a command for each row / each chord shape: `\maj` `\min` `\sev` and `\dimin`. (`\dimin` is longer because `\dim` gives you a diminuendo.) Each command takes a single note as an argument. Note that unlike articulations and `\chordmode`, the command comes **before** the note name/duration, so here's an alternating bass on C major:
+
+<Snippet showSource>
+```lilypond
+\clef bass
+\stradellaSymbols {
+    c4 \maj c4 g4 \maj c4
+}
+```
+</Snippet>
+
+The first C and the G are bass/root notes, and the other Cs are major chords.
+
+You can omit pitches or durations according to the usual LilyPond rules. Stradella clef can represent chord combining, so you can also use each command on individual notes of a chord, e.g. for chord combining:
+
+<Snippet showSource>
+```lilypond
+\clef stradella
+<\maj c \min a>2
+```
+</Snippet>
+
+## Writing counterbass
+
+The `\cnt` command works the same as the others and gives you a counterbass note. Name the actual note name you want played. If you select Stradella clef, it will automatically move the note down a third to show the player which button to play. In the other notations, it uses the conventional legato mark.
+
+<Snippet showSource>
+```lilypond
+\clef stradella
+\cnt e4                % This is on the C row
+\clef bass
+\stradellaTriads {
+    \cnt e4
+}
+```
+</Snippet>
+
+# Conclusion
+
+With LilyPond, stradella-clef.ly gives you an easy way to write accordion music and switch between the different notation styles without inputting all the notes again. You could generate a Stradella clef and a traditional part and let people choose which to play.

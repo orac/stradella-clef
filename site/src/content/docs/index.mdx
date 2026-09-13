@@ -1,49 +1,60 @@
 ---
 title: Stradella clef
-description: A tabular notation for the Stradella bass of an accordion, for LilyPond.
+description: Notation born of practicality, rooted in music theory.
 template: splash
 hero:
-  tagline: Write the buttons you press. Engrave them however you like.
+  tagline: Notation born of practicality, rooted in music theory.
   actions:
     # Starlight applies `base` to sidebar links but NOT to hero action links,
     # so this one has to spell the prefix out. Keep it in step with BASE in
     # astro.config.mjs.
-    - text: Using the library
-      link: /stradella-clef/using/
+    - text: How to read and play
+      link: /stradella-clef/play
+    - text: Making your own Stradella music with LilyPond
+      link: /stradella-clef/lilypond/
       icon: right-arrow
-    - text: View on GitHub
-      link: https://github.com/USER/stradella-clef
-      icon: external
-      variant: minimal
 ---
+import HeroText from '../../components/HeroText.astro';
+import Snippet from '../../components/Snippet.astro';
 
-import { CardGrid, Card } from '@astrojs/starlight/components';
+## Stradella bass, accordion's secret weapon
 
-{/* TODO: the "why should I want this?" argument. Some notes on what it needs to do:
+**Stradella bass** is the greatest invention in music since Pythagoras realised you can put your finger on the middle of a string to pitch it up an octave. Armed with Stradella bass, accordion should be the easiest instrument. The very layout matches the patterns that real-world chord progressions follow. The most time-consuming part of learning instruments like piano and guitar is learning all the different chords, but we accordionists get to skip that pain: you don't have to think about what individual notes are in each chord, and progressions are the same shape regardless of what key you play in.
 
-  - Open with the problem, not the solution. A Stradella player presses one
-    button; ordinary notation makes you write out a triad and then read it back
-    as a button. The notation is describing the sound, not the instrument.
+One thing lets us down and makes accordion as hard as those other instruments: **sheet music**. We use the same notation that pianos use, throwing away the accordion's advantages. You have to read the notes and recognise the chord like a pianist does, and go backwards: from the separate notes to the chord root and shape, and from there to a single button under your left hand. It's hard for beginners to learn, and even for advanced players, it ties up brain cells you could be using to play more expressively, if only the notation weren't creating extra work for you.
 
-  - Show, don't tell. The same bar engraved both ways, side by side, is the
-    argument. Words are the caption.
+There is already a traditional solution for this. You might have seen music like this:&mdash;
 
-  - Say who it is not for. Anyone reading the bass line as pitches rather than
-    as buttons wants ordinary notation, and this library will still give them
-    that from the same source. That is the reassuring bit, so do not bury it.
-*/}
+<Snippet>
+```lilypond
+\clef bass
+\stradellaSymbols {
+  c \maj c e \maj c
+}
+```
+</Snippet>
 
-<CardGrid>
-  <Card title="TODO: the problem" icon="warning">
-    What is wrong with writing Stradella bass in ordinary notation.
-  </Card>
-  <Card title="TODO: the idea" icon="approve-check">
-    Position is the circle of fifths; colour and shape are the row.
-  </Card>
-  <Card title="TODO: one source, three scores" icon="document">
-    The same input engraves as tablature or as ordinary notation.
-  </Card>
-  <Card title="TODO: what it costs you" icon="setting">
-    One file, one `\include`, no install.
-  </Card>
-</CardGrid>
+This solves only half the problem: now you can just read the chord shapes instead of having to work them out, but you still have to read the notes in their piano-keyboard order and relate that to the more natural order of the instrument. Why is that a problem? Look at these notes.
+
+<Snippet>
+```lilypond
+\clef bass
+\fixed c, {
+  a \maj a a \maj a | \key ef \major af \maj af af \maj af
+}
+```
+</Snippet>
+
+They're **so similar** on the page but they're in **completely different places** on the instrument. On piano, the sharps and flats implied by a key signature only move your fingers from a white to an adjacent black key, but on Stradella bass, they might move your whole hand to the opposite end of the instrument.
+
+<HeroText>Accordionists deserve better sheets.</HeroText>
+
+*Stradella clef* is a new notation that makes reading accordion music as easy as painting by numbers, freeing you up to focus on your performance. Inspired by guitar tabs but tied to the cycle of fifths, it puts nearby buttons near each other on the staff. It's quicker to learn than bass clef, and less taxing to play at sight.
+
+## Is notation reform doomed to failure?
+
+Music software guru **Tantacrul** made [an amazing documentary](https://youtu.be/Eq3bUFgEcb4) about the history of music notation and some failed attempts to reform it. You could watch it and think that we're doomed to always suffer with the problems that we have today, with no path to anything better. But his video also gives us three reasons to be optimistic:
+
+1. Today's music notation is part of a millennium-long heritage: but it has evolved continuously over that time. It's not written in stone, it gradually changes in response to new technologies (like digital printing), instruments (like accordions) and the needs of musicians.
+2. The main reason reforms fail is that you have to teach the whole body of music practitioners (players and composers) a new thing with a different set of compromises that leave some people worse-off than before. But Stradella clef isn't for everyone, it's just for accordionists, so we don't have to force compromises onto other instruments, and it's so easy that you can learn it today even if nobody else picks it up.
+3. The most successful notation reform has been **guitar tabs**. Tabs are targeted at new players (you can read them without having to learn music first), and they're just for one instrument. They're so successful amongst guitarists that some estimates say that there are more regular guitar tab users than standard notation. Stradella clef is the accordion equivalent of guitar tabs: it's instrument-specific, you can choose to learn it instead of bass clef, and there's no reason every accordionist can't use it.
