@@ -10,6 +10,7 @@ toc: false
 import Hero from '../components/Hero.astro';
 import HeroText from '../components/HeroText.astro';
 import Snippet from '../components/Snippet.astro';
+import Cta from '../components/Cta.astro';
 
 <Hero
   tagline="Notation born of practicality, rooted in music theory."
@@ -52,6 +53,13 @@ They're **so similar** on the page but they're in **completely different places*
 <HeroText>Accordionists deserve better sheets.</HeroText>
 
 *Stradella clef* is a new notation that makes reading accordion music as easy as painting by numbers, freeing you up to focus on your performance. Inspired by guitar tabs but tied to the cycle of fifths, it puts nearby buttons near each other on the staff. It's quicker to learn than bass clef, and less taxing to play at sight.
+
+<Cta
+  actions={[
+    { text: 'Learn to play it', path: 'play/' },
+    { text: 'Write it with LilyPond', path: 'lilypond/' },
+  ]}
+/>
 
 ## Is notation reform doomed to failure?
 

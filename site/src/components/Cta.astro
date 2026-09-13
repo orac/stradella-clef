@@ -1,0 +1,65 @@
+---
+/**
+ * Cta — a row of action links: the first filled in brass, the rest plain text.
+ *
+ * Lifted out of Hero so the same "here's where to go next" gesture can appear mid-page as well as at the top of the landing page.
+ */
+import { href } from '../lib/href';
+
+interface Props {
+    actions: { text: string; path: string }[];
+}
+
+const { actions } = Astro.props;
+---
+
+<p class="cta">
+    {actions.map(({ text, path }, i) => (
+        <a href={href(path)} class={i === 0 ? 'cta__action cta__action--first' : 'cta__action'}>
+            {text}<span aria-hidden="true"> →</span>
+        </a>
+    ))}
+</p>
+
+<style>
+    .cta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem 1.5rem;
+        font-size: 1.0625rem;
+    }
+
+    .cta__action {
+        text-decoration: none;
+        color: var(--ink-soft);
+    }
+
+    /* The filled button earns its weight because it's the primary way into whatever it's attached to; everywhere else on the site, an accent colour on text is emphasis enough. */
+    .cta__action--first {
+        padding: 0.7rem 1.3rem;
+        background: var(--spark);
+        color: var(--paper);
+        font-weight: 700;
+        border-radius: 2px;
+        transition: background 120ms ease, transform 120ms ease;
+    }
+
+    .cta__action--first:hover {
+        background: var(--spark-lift);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .cta__action:not(.cta__action--first):hover {
+        color: var(--accent-lift);
+        text-decoration: underline;
+        text-underline-offset: 0.3em;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .cta__action--first {
+            transition: none;
+        }
+    }
+</style>

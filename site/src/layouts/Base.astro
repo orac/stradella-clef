@@ -5,6 +5,7 @@
  * Deliberately thin. It knows nothing about prose, tables of contents or heroes; Article layers those on top. The page's own content is a single slot, so a page can be as unstructured as it likes.
  */
 import { Font } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import { href } from '../lib/href';
 import '../styles/global.css';
 
@@ -18,9 +19,12 @@ const { title, description } = Astro.props;
 // The home page is the site's name; every other page hangs off it.
 const pageTitle = Astro.url.pathname === import.meta.env.BASE_URL ? title : `${title} — Stradella clef`;
 
+// A page joins the nav by giving itself a `nav` block in its frontmatter, rather than being listed here — so a new page (about.mdx, say) appears without editing this layout. The index page deliberately has no `nav` block: it's already reachable from the site title.
+const navPages = await getCollection('pages', ({ data }) => Boolean(data.nav));
 const nav = [
-    { label: 'Read and play', path: 'play/' },
-    { label: 'LilyPond', path: 'lilypond/' },
+    ...navPages
+        .sort((a, b) => a.data.nav!.order - b.data.nav!.order)
+        .map(({ id, data }) => ({ label: data.nav!.label, path: id === 'index' ? '' : `${id}/` })),
     { label: 'GitHub', path: 'https://github.com/orac/stradella-clef', external: true },
 ];
 

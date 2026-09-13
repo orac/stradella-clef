@@ -17,11 +17,15 @@
     --accent-lift: #4c3bb5;
     --emph: #882255;
 
+    /* A third voice, borrowed from the reeds rather than the rows: the brass of the instrument itself, for the handful of moments that should feel like an invitation rather than an argument. */
+    --spark: #b8631c;
+    --spark-lift: #d47a2c;
+
     --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
     /* The measure, and the two wider tracks that snippets and code spill into. */
-    --prose-width: 33rem;
-    --wide-width: 46rem;
+    --prose-width: 39.6rem;
+    --wide-width: 55.2rem;
     --prose-padding-x: 1.25rem;
     --toc-width: 13rem;
 
@@ -113,16 +117,17 @@ h4 {
 
 h1 {
     font-size: var(--step-3);
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: -0.025em;
     margin-block: 0 1.5rem;
 }
 
-/* Headings mark a change of subject, so they get most of their space above. The hairline is the only rule on the page; it does the work a bigger type size would otherwise have to do. */
+/* Headings mark a change of subject, so they get most of their space above. The rule used to be a hairline the same colour as every other rule on the page; now it's the one place the brass gets to run the full width of a section break, so a reader skimming past can feel where one idea ends and the next begins. */
 h2 {
     font-size: var(--step-2);
     margin-block: 3.5rem 1rem;
-    padding-block-start: 0.8rem;
-    border-block-start: 1px solid var(--rule);
+    padding-block-start: 0.9rem;
+    border-block-start: 3px solid var(--spark);
 }
 
 h3 {
@@ -262,9 +267,9 @@ blockquote {
 
 .site-title {
     font-family: var(--font-display), Georgia, serif;
-    font-weight: 600;
-    font-size: 1.0625rem;
-    letter-spacing: 0.02em;
+    font-weight: 700;
+    font-size: 1.1875rem;
+    letter-spacing: 0.01em;
     color: var(--ink);
     text-decoration: none;
     margin-inline-end: auto;

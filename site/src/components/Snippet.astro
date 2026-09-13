@@ -137,10 +137,19 @@ if (code.trim()) {
     margin: 1.75rem auto;
     color: #000;
   }
+  /* Engravings read better a little larger than LilyPond's own default, so every snippet is shown at 1.5x. `zoom` (rather than a transform) keeps that scaling part of layout, so max-width still clamps the result to the column. */
   .snippet :global(svg) {
     display: block;
+    zoom: 1.5;
     max-width: 100%;
     height: auto;
+  }
+  /* Set by the script below once a snippet's true 1.5x width would outgrow the column: rather than shrink it back down to fit, let it run the full width of the viewport, centred. */
+  .snippet--overflow {
+    grid-column: full;
+  }
+  .snippet--overflow :global(svg) {
+    margin-inline: auto;
   }
   .snippet-error {
     border-inline-start: 0.25rem solid var(--emph);
@@ -150,3 +159,18 @@ if (code.trim()) {
     white-space: pre-wrap;
   }
 </style>
+
+<script>
+  // A snippet's natural width (post-zoom) can't be known at build time, since the column it sits in is itself responsive. So this measures each snippet against its column on load and on resize, and only breaks the ones that don't fit out to the full viewport width; snippets paired with their source stay put, since a flex row has nowhere for "full width" to mean.
+  function updateSnippetOverflow(container: Element) {
+    if (container.closest('.snippet-pair')) return;
+    const svg = container.querySelector(':scope > svg') as SVGSVGElement | null;
+    if (!svg) return;
+    const naturalWidth = svg.width.baseVal.value * 1.5;
+    container.classList.toggle('snippet--overflow', naturalWidth > container.clientWidth);
+  }
+
+  const snippets = document.querySelectorAll('.snippet');
+  snippets.forEach(updateSnippetOverflow);
+  window.addEventListener('resize', () => snippets.forEach(updateSnippetOverflow));
+</script>

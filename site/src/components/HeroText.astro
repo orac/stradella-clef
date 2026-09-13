@@ -12,7 +12,7 @@
  * ## Geometry
  * It takes the `full` track of the .prose grid (global.css), so it needs no margin tricks of its own and stays inside the page whether the prose column is the full window or sits beside a table of contents.
  *
- * It is a tint rather than a reversed panel: a saturated band would be the loudest thing on a site whose whole argument is made quietly, and it would fight the ink-on-paper snippets on either side of it.
+ * It's a reversed panel now, not a tint: this is the one sentence a piece pivots on, so it's allowed to be the loudest thing on the page, provided it stays the *only* loud thing — the ink-on-paper snippets either side of it get no such treatment.
  */
 ---
 
@@ -25,9 +25,9 @@
 <style>
     .hero-text {
         margin-block: clamp(3rem, 7vw, 5rem);
-        padding: clamp(2.25rem, 5vw, 3.5rem) var(--prose-padding-x);
-        background: var(--paper-tint);
-        border-block: 1px solid var(--rule);
+        padding: clamp(2.5rem, 6vw, 4rem) var(--prose-padding-x);
+        background: var(--ink);
+        border-block: 3px solid var(--spark);
         text-align: center;
     }
 
@@ -35,11 +35,11 @@
         max-width: min(90vw, 18em);
         margin-inline: auto;
         font-family: var(--font-display), Georgia, serif;
-        font-weight: 600;
-        font-size: clamp(1.7rem, 1rem + 2.6vw, 2.75rem);
-        line-height: 1.15;
+        font-weight: 700;
+        font-size: clamp(1.85rem, 1rem + 3vw, 3rem);
+        line-height: 1.12;
         letter-spacing: -0.02em;
-        color: var(--ink);
+        color: var(--paper);
         text-wrap: balance;
     }
 
