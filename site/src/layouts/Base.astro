@@ -44,7 +44,7 @@ const here = Astro.url.pathname.replace(/\/$/, '');
     <body>
         <header class="site-header">
             <div class="site-header__inner">
-                <a class="site-title" href={href('/')}>Stradella clef</a>
+                <a class="site-title" href={href('/')}><img class="site-title__glyph" src={href('/stradella.svg')} alt="S" />tradella clef</a>
                 <nav class="site-nav" aria-label="Site">
                     {nav.map(({ label, path, external }) => {
                         const url = external ? path : href(path);

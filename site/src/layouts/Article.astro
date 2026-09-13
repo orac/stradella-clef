@@ -28,6 +28,6 @@ const { title, description, toc = true, heading = true } = frontmatter;
             {heading && <h1>{title}</h1>}
             <slot />
         </article>
-        {toc && <Toc headings={headings} />}
+        {toc && <Toc title={title} headings={headings} />}
     </div>
 </Base>

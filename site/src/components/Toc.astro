@@ -1,22 +1,27 @@
 ---
 /**
- * Toc — "on this page", the one piece of Starlight's chrome worth keeping.
+ * Toc — the one piece of Starlight's chrome worth keeping.
  *
  * It lives in the right margin and is hidden below 78rem. See .article--with-toc in global.css for the placement.
+ *
+ * The heading is the page title, doubling as a back-to-top link.
  *
  * The current section is found by taking the last heading above a reading line a fifth of the way down the window, rather than by IntersectionObserver ratios, so a short section between two long ones still gets its turn.
  */
 interface Props {
+    title: string;
     headings: { depth: number; slug: string; text: string }[];
 }
+
+const { title } = Astro.props;
 
 // h1 is the page title, and h4 and below are too fine-grained to navigate by.
 const headings = Astro.props.headings.filter(({ depth }) => depth === 2 || depth === 3);
 ---
 
 {headings.length > 1 && (
-    <nav class="toc" aria-label="On this page">
-        <h2 class="toc__title">On this page</h2>
+    <nav class="toc" aria-label={`${title} — contents`}>
+        <h2 class="toc__title"><a href="#">{title}</a></h2>
         <ul>
             {headings.map(({ depth, slug, text }) => (
                 <li class={depth === 3 ? 'toc__sub' : undefined}>
@@ -86,15 +91,25 @@ const headings = Astro.props.headings.filter(({ depth }) => depth === 2 || depth
     }
 
     .toc__title {
+        margin: 0 0 0.75rem;
+        padding: 0;
+        border: 0;
+    }
+
+    .toc__title a {
+        display: block;
+        padding: 0;
         font-family: var(--font-display), Georgia, serif;
         font-size: 0.8125rem;
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
+        text-wrap: pretty;
         color: var(--ink-soft);
-        margin: 0 0 0.75rem;
-        padding: 0;
-        border: 0;
+    }
+
+    .toc__title a:hover {
+        color: var(--ink);
     }
 
     ul {
