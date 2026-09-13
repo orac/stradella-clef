@@ -1,22 +1,22 @@
-%%%% stradella-clef.ly -- a tabular notation for the Stradella bass of an accordion.
-%%%%
-%%%% Copyright (C) 2026 Tufty Indigo
-%%%%
-%%%% SPDX-License-Identifier: GPL-3.0-or-later
-%%%%
-%%%% This file is free software: you can redistribute it and/or modify it under
-%%%% the terms of the GNU General Public License as published by the Free
-%%%% Software Foundation, either version 3 of the License, or (at your option)
-%%%% any later version.  These are the same terms as LilyPond itself.
-%%%%
-%%%% This file is distributed in the hope that it will be useful, but WITHOUT ANY
-%%%% WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-%%%% FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
-%%%%
-%%%% You should have received a copy of the GNU General Public License along with
-%%%% this file.  If not, see <https://www.gnu.org/licenses/>.
-%%%%
-%%%% Home: https://github.com/USER/stradella-clef
+% stradella-clef.ly -- a tabular notation for the Stradella bass of an accordion.
+%
+% Copyright (C) 2026 Tufty Indigo
+%
+% SPDX-License-Identifier: GPL-3.0-or-later
+%
+% This file is free software: you can redistribute it and/or modify it under
+% the terms of the GNU General Public License as published by the Free
+% Software Foundation, either version 3 of the License, or (at your option)
+% any later version.  These are the same terms as LilyPond itself.
+%
+% This file is distributed in the hope that it will be useful, but WITHOUT ANY
+% WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+% FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
+%
+% You should have received a copy of the GNU General Public License along with
+% this file.  If not, see <https://www.gnu.org/licenses/>.
+%
+% Home: https://github.com/orac/stradella-clef
 
 \version "2.24.3"
 
@@ -354,33 +354,64 @@ mixed as freely as @code{\\clef treble} and @code{\\clef bass}.")
 
 %%%% Engraving the same music traditionally
 
-% Move a chord bodily by octaves until it sits as close as it can to CENTRE.
-#(define (stradella-centre-octave pitches centre)
-   (let* ((mean (/ (apply + (map ly:pitch-steps pitches)) (length pitches)))
-          (octaves (round (/ (- (ly:pitch-steps centre) mean) 7)))
-          (shift (ly:make-pitch octaves 0 0)))
-     (map (lambda (pitch) (ly:pitch-transpose pitch shift)) pitches)))
+% The bass and treble halves of the traditionally-notated staff, as the
+% ly:pitch-steps of their boundary notes.  The line between them -- d -- is
+% used by neither: a root note stays at or below ROOT-CEILING (c), and a
+% chord's notes stay at or above CHORD-FLOOR (ef), so the middle line marks
+% the border between the two rather than being a position either ever uses.
+#(define stradella-root-ceiling (ly:pitch-steps (ly:make-pitch -1 0 0)))
+#(define stradella-chord-floor (ly:pitch-steps (ly:make-pitch -1 2 FLAT)))
 
-#(define (stradella-distance-from pitches centre)
-   (abs (- (/ (apply + (map ly:pitch-steps pitches)) (length pitches))
-           (ly:pitch-steps centre))))
+% Shift PITCH by whole octaves to the highest octave that still sits at or
+% below LIMIT.  A pitch's letter and alteration survive; only its octave, the
+% one thing a Stradella button never specifies, is chosen for it.
+#(define (stradella-fit-below-ceiling pitch limit)
+   (let* ((step (ly:pitch-steps pitch))
+          (octaves (- (ceiling (/ (- step limit) 7)))))
+     (ly:pitch-transpose pitch (ly:make-pitch octaves 0 0))))
 
-% Choose the inversion and octave that sit nearest CENTRE, so that chords stay
-% in one comfortable register instead of striding up the staff with their roots.
-#(define (stradella-voicing pitches centre)
+% Shift PITCH by whole octaves to the lowest octave that still sits at or
+% above LIMIT.
+#(define (stradella-fit-above-floor pitch limit)
+   (let* ((step (ly:pitch-steps pitch))
+          (octaves (- (floor (/ (- step limit) 7)))))
+     (ly:pitch-transpose pitch (ly:make-pitch octaves 0 0))))
+
+% Move a whole chord bodily by octaves, keeping its close-position spacing, so
+% that its lowest note sits at the lowest step at or above FLOOR-STEP.
+% Guile's own min is shadowed here by \min, the minor-chord row command --
+% every row command is itself a top-level Scheme binding -- so it has to be
+% reimplemented rather than called by name.
+#(define (stradella-lowest-step pitches)
+   (fold (lambda (pitch lowest) (if (< (ly:pitch-steps pitch) lowest)
+                                     (ly:pitch-steps pitch)
+                                     lowest))
+         (ly:pitch-steps (car pitches))
+         (cdr pitches)))
+
+#(define (stradella-fit-chord-above-floor pitches floor-step)
+   (let* ((low (stradella-lowest-step pitches))
+          (octaves (- (floor (/ (- low floor-step) 7)))))
+     (map (lambda (pitch) (ly:pitch-transpose pitch (ly:make-pitch octaves 0 0)))
+          pitches)))
+
+% Choose the inversion that, once its octave is fitted above FLOOR-STEP, sits
+% lowest overall, so that chords hug the floor instead of climbing the staff
+% with their roots.
+#(define (stradella-chord-voicing pitches floor-step)
    (let loop ((rotations (length pitches))
               (candidate pitches)
               (best #f))
      (if (zero? rotations)
          best
-         (let ((voicing (stradella-centre-octave candidate centre)))
+         (let ((voicing (stradella-fit-chord-above-floor candidate floor-step)))
            (loop (1- rotations)
                  (append (cdr candidate)
                          (list (ly:pitch-transpose (car candidate)
                                                    (ly:make-pitch 1 0 0))))
                  (if (or (not best)
-                         (< (stradella-distance-from voicing centre)
-                            (stradella-distance-from best centre)))
+                         (< (stradella-lowest-step voicing)
+                            (stradella-lowest-step best)))
                      voicing
                      best))))))
 
@@ -398,6 +429,26 @@ mixed as freely as @code{\\clef treble} and @code{\\clef bass}.")
    (let ((copy (stradella-strip-row! (ly:music-deep-copy note))))
      (set! (ly:music-property copy 'pitch) pitch)
      copy))
+
+% Traditional notation has no button to show, so a counterbass note marks
+% itself tenuto instead: the closest ordinary sign to "held down while the
+% row above it changes".
+#(define (stradella-add-tenuto! note)
+   (set! (ly:music-property note 'articulations)
+         (cons (make-music 'ArticulationEvent 'articulation-type 'tenuto)
+               (ly:music-property note 'articulations)))
+   note)
+
+% A fundamental bass or counterbass note, octaved into the lower half of the
+% staff.  A note with no pitch at all (a drum note, say) is left untouched.
+#(define (stradella-root-note note)
+   (let ((pitch (ly:music-property note 'pitch #f)))
+     (if (ly:pitch? pitch)
+         (let ((root (stradella-note-at note (stradella-fit-below-ceiling pitch stradella-root-ceiling))))
+           (if (eq? (stradella-music-row note) 'counterbass)
+               (stradella-add-tenuto! root)
+               root))
+         (stradella-strip-row! note))))
 
 % Rewrite every note event in MUSIC with EXPAND, which returns a list of events
 % to stand in its place; a lone note that expands into several becomes a chord.
@@ -422,13 +473,13 @@ mixed as freely as @code{\\clef treble} and @code{\\clef bass}.")
     music))
 
 stradellaTriads =
-#(define-music-function (centre music) ((ly:pitch? (ly:make-pitch -1 3 0)) ly:music?)
+#(define-music-function (music) (ly:music?)
    (_i "Replace every chord button in @var{music} with the notes it sounds, for
-engraving in ordinary notation.  Each chord is voiced in close position, and
-the inversion and octave that sit nearest @var{centre} are chosen, so that a
-bass line does not climb the staff as its roots do; @var{centre} defaults
-to@tie{}@code{f}, the middle of the upper half of the bass staff.  Bass and
-counterbass notes are left exactly as written, octave and all.
+engraving in ordinary notation.  Each chord is voiced in close position and
+octaved so that its notes stay in the upper half of the bass staff, at or
+above@tie{}@code{ef}, without climbing any higher than that requires.  A
+fundamental bass or counterbass note is octaved into the lower half instead,
+at or below@tie{}@code{c}: the middle line, @code{d}, is never used by either.
 
 Wrap this round @code{\\relative} music rather than putting it inside, or
 @code{\\relative} will undo the octaves it chooses.")
@@ -437,19 +488,20 @@ Wrap this round @code{\\relative} music rather than putting it inside, or
     (lambda (note)
       (if (stradella-chord-note? note)
           (map (lambda (pitch) (stradella-note-at note pitch))
-               (stradella-voicing (stradella-chord-pitches
-                                   (ly:music-property note 'pitch)
-                                   (stradella-music-row note))
-                                  centre))
-          (list (stradella-strip-row! note))))))
+               (stradella-chord-voicing (stradella-chord-pitches
+                                         (ly:music-property note 'pitch)
+                                         (stradella-music-row note))
+                                        stradella-chord-floor))
+          (list (stradella-root-note note))))))
 
 stradellaSymbols =
-#(define-music-function (centre music) ((ly:pitch? (ly:make-pitch -1 3 0)) ly:music?)
+#(define-music-function (music) (ly:music?)
    (_i "Replace every chord button in @var{music} with its root alone, marked
 @samp{M}, @samp{m}, @samp{7} or @samp{d} above the staff for the row, for
-engraving in ordinary notation.  The root is put in whichever octave lies
-nearest @var{centre}, which defaults to@tie{}@code{f}; bass and counterbass
-notes are left exactly as written.
+engraving in ordinary notation.  The root is octaved into the upper half of
+the bass staff, at or above@tie{}@code{ef}.  A fundamental bass or
+counterbass note is octaved into the lower half instead, at or
+below@tie{}@code{c}: the middle line, @code{d}, is never used by either.
 
 Wrap this round @code{\\relative} music rather than putting it inside, or
 @code{\\relative} will undo the octaves it chooses.")
@@ -458,8 +510,8 @@ Wrap this round @code{\\relative} music rather than putting it inside, or
     (lambda (note)
       (if (stradella-chord-note? note)
           (let* ((row (stradella-music-row note))
-                 (root (car (stradella-voicing
-                             (list (ly:music-property note 'pitch)) centre)))
+                 (root (stradella-fit-above-floor
+                        (ly:music-property note 'pitch) stradella-chord-floor))
                  (mark (stradella-row-attribute row 'mark)))
             ;; The mark has to be a sibling of the note rather than an
             ;; articulation on it: LilyPond cannot attach text to one note head
@@ -469,7 +521,7 @@ Wrap this round @code{\\relative} music rather than putting it inside, or
                   (if mark
                       (list (make-music 'TextScriptEvent 'text mark 'direction UP))
                       '())))
-          (list (stradella-strip-row! note))))))
+          (list (stradella-root-note note))))))
 
 % The Stradella clef glyph, transcribed from stradella.svg.  Its "M"/"l"/"c"/"Z"
 % commands are exactly \path's SVG-equivalent syntax, so the only translation
