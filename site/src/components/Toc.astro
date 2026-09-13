@@ -1,0 +1,134 @@
+---
+/**
+ * Toc — "on this page", the one piece of Starlight's chrome worth keeping.
+ *
+ * It lives in the right margin and is hidden below 78rem. See .article--with-toc in global.css for the placement.
+ *
+ * The current section is found by taking the last heading above a reading line a fifth of the way down the window, rather than by IntersectionObserver ratios, so a short section between two long ones still gets its turn.
+ */
+interface Props {
+    headings: { depth: number; slug: string; text: string }[];
+}
+
+// h1 is the page title, and h4 and below are too fine-grained to navigate by.
+const headings = Astro.props.headings.filter(({ depth }) => depth === 2 || depth === 3);
+---
+
+{headings.length > 1 && (
+    <nav class="toc" aria-label="On this page">
+        <h2 class="toc__title">On this page</h2>
+        <ul>
+            {headings.map(({ depth, slug, text }) => (
+                <li class={depth === 3 ? 'toc__sub' : undefined}>
+                    <a href={`#${slug}`} data-toc-link={slug}>{text}</a>
+                </li>
+            ))}
+        </ul>
+    </nav>
+)}
+
+<script>
+    const links = new Map<string, HTMLAnchorElement>(
+        [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')].map((a) => [a.dataset.tocLink!, a]),
+    );
+    const headings = [...links.keys()]
+        .map((slug) => document.getElementById(slug))
+        .filter((h) => h !== null);
+
+    if (headings.length) {
+        let current: string | undefined;
+
+        const update = () => {
+            const line = window.innerHeight * 0.2;
+            let found = headings[0]!.id;
+            for (const heading of headings) {
+                if (heading.getBoundingClientRect().top <= line) found = heading.id;
+            }
+            if (found === current) return;
+            if (current) links.get(current)?.removeAttribute('aria-current');
+            links.get(found)?.setAttribute('aria-current', 'true');
+            current = found;
+        };
+
+        let queued = false;
+        addEventListener(
+            'scroll',
+            () => {
+                if (queued) return;
+                queued = true;
+                requestAnimationFrame(() => {
+                    queued = false;
+                    update();
+                });
+            },
+            { passive: true },
+        );
+        update();
+    }
+</script>
+
+<style>
+    .toc {
+        display: none;
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+
+    @media (min-width: 78rem) {
+        .toc {
+            display: block;
+            position: sticky;
+            top: 3rem;
+            max-height: calc(100vh - 6rem);
+            overflow-y: auto;
+            padding-inline-end: var(--prose-padding-x);
+        }
+    }
+
+    .toc__title {
+        font-family: var(--font-display), Georgia, serif;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin: 0 0 0.75rem;
+        padding: 0;
+        border: 0;
+    }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-inline-start: 1px solid var(--rule);
+    }
+
+    li {
+        margin: 0;
+    }
+
+    a {
+        display: block;
+        padding: 0.3rem 0 0.3rem 0.85rem;
+        margin-inline-start: -1px;
+        border-inline-start: 1px solid transparent;
+        color: var(--ink-soft);
+        text-decoration: none;
+        text-wrap: pretty;
+    }
+
+    .toc__sub a {
+        padding-inline-start: 1.7rem;
+        font-size: 0.9285em;
+    }
+
+    a:hover {
+        color: var(--ink);
+    }
+
+    a[aria-current] {
+        color: var(--accent);
+        border-inline-start-color: var(--accent);
+    }
+</style>

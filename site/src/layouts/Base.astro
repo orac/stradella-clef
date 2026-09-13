@@ -1,0 +1,72 @@
+---
+/**
+ * Base — the HTML shell every page shares: head, masthead, footer.
+ *
+ * Deliberately thin. It knows nothing about prose, tables of contents or heroes; Article layers those on top. The page's own content is a single slot, so a page can be as unstructured as it likes.
+ */
+import { Font } from 'astro:assets';
+import { href } from '../lib/href';
+import '../styles/global.css';
+
+interface Props {
+    title: string;
+    description?: string;
+}
+
+const { title, description } = Astro.props;
+
+// The home page is the site's name; every other page hangs off it.
+const pageTitle = Astro.url.pathname === import.meta.env.BASE_URL ? title : `${title} — Stradella clef`;
+
+const nav = [
+    { label: 'Read and play', path: 'play/' },
+    { label: 'LilyPond', path: 'lilypond/' },
+    { label: 'GitHub', path: 'https://github.com/orac/stradella-clef', external: true },
+];
+
+// Trailing slashes vary between the dev server and the built site, so compare without them.
+const here = Astro.url.pathname.replace(/\/$/, '');
+---
+
+<html lang="en-GB">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{pageTitle}</title>
+        {description && <meta name="description" content={description} />}
+        <meta property="og:title" content={pageTitle} />
+        {description && <meta property="og:description" content={description} />}
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href={Astro.url.href} />
+        <Font cssVariable="--font-display" preload />
+        <Font cssVariable="--font-body" preload />
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="site-header__inner">
+                <a class="site-title" href={href('/')}>Stradella clef</a>
+                <nav class="site-nav" aria-label="Site">
+                    {nav.map(({ label, path, external }) => {
+                        const url = external ? path : href(path);
+                        return (
+                            <a
+                                href={url}
+                                aria-current={!external && here === url.replace(/\/$/, '') ? 'page' : undefined}
+                            >{label}</a>
+                        );
+                    })}
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <slot />
+        </main>
+
+        <footer class="site-footer">
+            <div class="site-footer__inner">
+                <p>Stradella clef is free to use, copy and teach. The LilyPond library is on <a href="https://github.com/orac/stradella-clef">GitHub</a>.</p>
+            </div>
+        </footer>
+    </body>
+</html>

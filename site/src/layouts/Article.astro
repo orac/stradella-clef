@@ -1,0 +1,33 @@
+---
+/**
+ * Article — a text-heavy page: the title, the prose column, and the table of contents in the right margin.
+ *
+ * Used as an MDX `layout`, so Astro passes it the page's own frontmatter and headings. A page opts out of the contents list (and of the h1, if it wants to open with something of its own) through frontmatter:
+ *
+ *   ---
+ *   title: How to read and play Stradella clef
+ *   description: Play your first Stradella clef bassline
+ *   toc: false
+ *   ---
+ */
+import Base from './Base.astro';
+import Toc from '../components/Toc.astro';
+
+interface Props {
+    frontmatter: { title: string; description?: string; toc?: boolean; heading?: boolean };
+    headings: { depth: number; slug: string; text: string }[];
+}
+
+const { frontmatter, headings } = Astro.props;
+const { title, description, toc = true, heading = true } = frontmatter;
+---
+
+<Base title={title} description={description}>
+    <div class:list={['article', toc && 'article--with-toc']}>
+        <article class="prose">
+            {heading && <h1>{title}</h1>}
+            <slot />
+        </article>
+        {toc && <Toc headings={headings} />}
+    </div>
+</Base>

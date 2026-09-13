@@ -2,25 +2,17 @@
 /**
  * HeroText — a full-bleed display statement for MDX prose.
  *
- * Lifts a single sentence out of the body column and sets it as a Fraunces
- * display line on a full-viewport indigo band. Use it for the one line a
- * piece pivots on — a thesis, a call to action — not for headings (those
- * are what h2/h3 are for).
+ * Lifts a single sentence out of the body column and sets it as a Fraunces display line across the whole window. Use it for the one line a piece pivots on — a thesis, a call to action — not for headings (those are what h2/h3 are for).
  *
  * ## Usage in MDX
- *   import HeroText from '../../components/HeroText.astro';
+ *   import HeroText from '../components/HeroText.astro';
  *
- *   <HeroText>Find your ticklish spots, and find new ways to tickle them.</HeroText>
+ *   <HeroText>Accordionists deserve better sheets.</HeroText>
  *
- * ## Full-bleed geometry
- * The prose column (.prose) is --prose-width wide and centred, so its own
- * width is the 100% that margins resolve against. `margin-inline: calc(50% - 50vw)`
- * pulls each edge back to the viewport edge and `width: 100vw` fills it.
- * body carries `overflow-x: clip` (global.css) so the 100vw band never adds
- * a horizontal scrollbar when a vertical one is present.
+ * ## Geometry
+ * It takes the `full` track of the .prose grid (global.css), so it needs no margin tricks of its own and stays inside the page whether the prose column is the full window or sits beside a table of contents.
  *
- * The text itself is capped at a readable measure and centred within the band;
- * the band is full width, the line is not.
+ * It is a tint rather than a reversed panel: a saturated band would be the loudest thing on a site whose whole argument is made quietly, and it would fight the ink-on-paper snippets on either side of it.
  */
 ---
 
@@ -32,23 +24,22 @@
 
 <style>
     .hero-text {
-        width: 100vw;
-        margin-inline: calc(50% - 50vw);
-        margin-block: clamp(2rem, 5vw, 3.5rem);
-        padding: clamp(1.75rem, 4vw, 3rem) var(--prose-padding-x);
-        background: var(--accent);
+        margin-block: clamp(3rem, 7vw, 5rem);
+        padding: clamp(2.25rem, 5vw, 3.5rem) var(--prose-padding-x);
+        background: var(--paper-tint);
+        border-block: 1px solid var(--rule);
         text-align: center;
     }
 
     .hero-text__inner {
-        max-width: min(90vw, 20em);
+        max-width: min(90vw, 18em);
         margin-inline: auto;
-        font-family: var(--font-fraunces), Georgia, serif;
-        font-weight: 800;
-        font-size: clamp(1.8rem, 3vw + 0.75rem, 2.9rem);
-        line-height: 1.12;
+        font-family: var(--font-display), Georgia, serif;
+        font-weight: 600;
+        font-size: clamp(1.7rem, 1rem + 2.6vw, 2.75rem);
+        line-height: 1.15;
         letter-spacing: -0.02em;
-        color: var(--paper);
+        color: var(--ink);
         text-wrap: balance;
     }
 

@@ -1,21 +1,23 @@
 ---
+layout: ../layouts/Article.astro
 title: Stradella clef
 description: Notation born of practicality, rooted in music theory.
-template: splash
-hero:
-  tagline: Notation born of practicality, rooted in music theory.
-  actions:
-    # Starlight applies `base` to sidebar links but NOT to hero action links,
-    # so this one has to spell the prefix out. Keep it in step with BASE in
-    # astro.config.mjs.
-    - text: How to read and play
-      link: /stradella-clef/play
-    - text: Making your own Stradella music with LilyPond
-      link: /stradella-clef/lilypond/
-      icon: right-arrow
+# The hero supplies the opening, and a landing page has no business carrying a
+# contents list.
+heading: false
+toc: false
 ---
-import HeroText from '../../components/HeroText.astro';
-import Snippet from '../../components/Snippet.astro';
+import Hero from '../components/Hero.astro';
+import HeroText from '../components/HeroText.astro';
+import Snippet from '../components/Snippet.astro';
+
+<Hero
+  tagline="Notation born of practicality, rooted in music theory."
+  actions={[
+    { text: 'How to read and play', path: 'play/' },
+    { text: 'Write your own with LilyPond', path: 'lilypond/' },
+  ]}
+/>
 
 ## Stradella bass, accordion's secret weapon
 

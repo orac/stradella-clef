@@ -1,8 +1,9 @@
 ---
+layout: ../layouts/Article.astro
 title: How to read and play Stradella clef
 description: Play your first Stradella clef bassline
 ---
-import Snippet from '../../components/Snippet.astro';
+import Snippet from '../components/Snippet.astro';
 
 Whether you're an **expert player** or a **new player** who hasn't learned bass clef yet, after reading this page you'll be able to play basslines with Stradella clef. If you have your instrument to hand, try playing along with the examples.
 
@@ -73,7 +74,7 @@ df^"D♭" ef^"E♭" f^"F" g^"G" a^"A" b^"B" cs^"C♯"
 ```
 </Snippet>
 
-Just like traditional notation, there are *leger lines* when you go off the top or bottom of the staff. You won't see them very often unless you play in keys with lots of sharps or flats.
+Just like traditional notation, there are *leger lines* when you go off the top or bottom of the staff. You won't see them often unless you play in keys with lots of sharps or flats.
 
 ### Two buttons playing the same note
 
@@ -129,13 +130,15 @@ Diminished chords are the rarest, so how fitting they should be represented by a
 
 ## Counter-bass
 
-Traditional accordion notation reuses the legato sign as a fingering hint, to tell you when to play a note as the counterbass, but it still leaves you to work out where the counterbass is: an extra thing to learn, and an extra thing to distract you from playing. Do these pairs of notes *look* like they're next to each other? Do they look like they're the same shape?
+Traditional accordion notation reuses the legato sign as a fingering hint, to tell you when to play a note as the counterbass, but it still leaves you to work out where the counterbass is: an extra thing to learn, and an extra thing to distract you from playing.
+
+Do these pairs of notes *look* like they're next to each other? Do they look like they're the same shape?
 
 <Snippet>
 ```lilypond
 \clef bass
 \time 2/4
-\fixed c, { c'4 e-- d fs-- g b-- bf d-- }
+\stradellaTriads { c4 e-- d fs-- g b-- bf d-- }
 ```
 </Snippet>
 
@@ -157,10 +160,12 @@ For example, these two runs start with the same notes, but the last note require
 ```lilypond
 \clef bass
 \time 6/8
-\fixed c, { c8 d e f g af \section c d e f g a }
+\stradellaTriads { c8 d e f g af \section c d e f g a }
 ```
 </Snippet>
+
 In Stradella clef, you can't immediately see that it's a scale (you will with a little practice!), but you *can* see from the overall shape where your hand needs to be to play it.
+
 <Snippet>
 ```
 \clef stradella
@@ -176,54 +181,77 @@ Now you have everything you need to read and play Stradella clef, except time an
 
 ### Chord progressions
 
-Let's start by looking at a common I-IV-V alternating bass in different keys. Notice how in Stradella clef it's the same shape regardless of what key we're in.
+Let's start by looking at a common I-IV-V alternating bass in different keys. Here's the old style that you might already know.
 
 <Snippet>
 ```lilypond
-\fixed c {
-\mark \markup "C major"
 \clef bass
-c4 \maj c g \maj c | f \maj f c \maj f | g \maj g d \maj g |
-\clef stradella
-c4 \maj c g \maj c | f \maj f c \maj f | g \maj g d \maj g |
-\break
-\mark \markup "F major"
-\key f \major
-\clef bass
-f \maj f c \maj f | bf \maj bf f \maj bf | c4 \maj c g \maj c |
-\clef stradella
-f \maj f c \maj f | bf \maj bf f \maj bf | c4 \maj c g \maj c |
-\break
-\mark \markup "A major"
-\key a \major
-\clef bass
-a \maj a e \maj a | d \maj d a \maj d | e \maj e b \maj e |
-\clef stradella
-a \maj a e \maj a | d \maj d a \maj d | e \maj e b \maj e |
-\break
-\mark \markup { A♭ major }
-\key af \major
-\clef bass
-af \maj af ef \maj af | df \maj df af \maj df | ef \maj ef bf \maj ef |
-\clef stradella
-af \maj af ef \maj af | df \maj df af \maj df | ef \maj ef bf \maj ef |
+\stradellaSymbols {
+    \mark \markup "C major"
+    c4 \maj c g \maj c | f \maj f c \maj f | g \maj g d \maj g |
+    \break
+    \mark \markup "F major"
+    \key f \major
+    f \maj f c \maj f | bf \maj bf f \maj bf | c4 \maj c g \maj c |
+    \break
+    \mark \markup "A major"
+    \key a \major
+    a \maj a e \maj a | d \maj d a \maj d | e \maj e b \maj e |
+    \break
+    \mark \markup { A♭ major }
+    \key af \major
+    af \maj af ef \maj af | df \maj df af \maj df | ef \maj ef bf \maj ef |
 }
+\fine
 ```
 </Snippet>
 
-Did you also notice how the first bar of the A and A♭ sections looked identical in bass clef, even though your hands were in quite different places? Traditional notation often makes different hand shapes look the same, and similar patterns look different. Stradella clef aims to make the same hand shape look the same. Every bar here is the same shape, just on a different note. This makes it easier to recognise, and easier to see when it changes to something different. For example, I like to vary the alternating bass by playing the third (counterbass) if the next chord is going to be up a fifth, like this:
+Every bar has a different "shape" on the page, even though it's the same pattern of buttons. There's one exception: the A major and A♭ major bars look exactly the same, even though your hands are in completely different places. Only the key signature tells you there's any difference. Traditional notation often makes different hand shapes look the same, and similar patterns look different.
+
+Now let's look at Stradella clef:
 
 <Snippet>
 ```lilypond
-\mark \markup "C major into G major"
-\clef bass
-c4 \maj c e \maj c | g \maj g d \maj g |
 \clef stradella
-c4 \maj c \cnt e \maj c | g \maj g d \maj g |
+{
+    \mark \markup "C major"
+    c4 \maj c g \maj c | f \maj f c \maj f | g \maj g d \maj g |
+    \break
+    \mark \markup "F major"
+    \key f \major
+    f \maj f c \maj f | bf \maj bf f \maj bf | c4 \maj c g \maj c |
+    \break
+    \mark \markup "A major"
+    \key a \major
+    a \maj a e \maj a | d \maj d a \maj d | e \maj e b \maj e |
+    \break
+    \mark \markup { A♭ major }
+    \key af \major
+    af \maj af ef \maj af | df \maj df af \maj df | ef \maj ef bf \maj ef |
+}
+\fine
 ```
 </Snippet>
 
-In Stradella clef, that counterbass note sticks out from the surrounding fifths. You can see at a glance which note is different from the alternating bass pattern. But in bass clef, you have to read every note to spot the difference, because the bass patttern is already a different shape for every root note.
+Stradella clef aims to make the same pattern of buttons look the same. Every bar here is the same shape, just on a different note. This makes it easier to recognise, and easier to see when it changes. For example, I like to vary the alternating bass by playing the third (counterbass) if the next chord is going to be up a fifth. Here's an example of two C major bars into a G major bar:
+
+<Snippet>
+```lilypond
+\clef bass
+\stradellaSymbols { c4 \maj c g \maj c | c4 \maj c e \maj c | g \maj g d \maj g | }
+```
+</Snippet>
+
+When all the bars look different, you've really got to pay attention to notice that one bar really is different. But here's how it looks in Stradella clef:
+
+<Snippet>
+```lilypond
+\clef stradella
+c4 \maj c g \maj c | c4 \maj c \cnt e \maj c | g \maj g d \maj g |
+```
+</Snippet>
+
+You can see at a glance which note is different. Sheet music doesn't have repeats and first- and second-time bars just to save paper: it's because it's easy to play if you don't have to search the whole page to find the one bar that's different.
 
 ### Chord combining
 
@@ -236,7 +264,7 @@ c'4^"m7"
 ```
 </Snippet>
 
-by pressing the C minor and E♭ major buttons together. This is considered an advanced technique because you have to learn what buttons to combine, but it's the same shape every time. G minor seventh is G minor plus B♭ major; D minor seventh is D minor plus F major, and so on, always the major three buttons down from the root.
+by pressing the C minor and E♭ major buttons together. This is considered an advanced technique because you have to learn what buttons to combine, but it's **the same shape** every time. Gm7 is G minor plus B♭ major; Dm7 is D minor plus F major, and so on, always the major three buttons down from the root.
 
 With Stradella clef, this is now a basic technique, because you don't have to learn it, the music just tells you:
 
@@ -249,7 +277,7 @@ With Stradella clef, this is now a basic technique, because you don't have to le
 
 It might look a little weird at first, because it's something completely new. Still, all you have to do is play the buttons it tells you.
 
-Also, music often wants you to play a root note at the same time as the same chord. Of course, that works too. Whether this is useful or not depends on whether the register has a different octave for the root notes compared to the chords: on some instruments they just sound the same reeds, others have different reeds for the root notes.
+Also, music often wants you to play a root note at the same time as the same chord. Of course, that works too. This might be the first time you've seen two noteheads on the same stem in a chord, but it's commonplace in Stradella clef.
 
 <Snippet>
 ```lilypond
@@ -257,3 +285,5 @@ Also, music often wants you to play a root note at the same time as the same cho
 <c \maj c>2
 ```
 </Snippet>
+
+ Whether this is useful or not depends on whether the register has a different octave for the root notes compared to the chords: on some instruments they just sound the same reeds, others have different reeds for the root notes.

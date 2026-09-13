@@ -1,0 +1,328 @@
+/* The site's whole design system. Two ideas hold it together.
+
+   One: the page is the same paper the music is printed on. LilyPond engraves every <Snippet> as black ink on #faf7f0, so the page is that colour too and the examples sit in the prose rather than on it. The accents are lifted from the notation's own chord colours (stradella-clef.ly), so the site is coloured by the thing it is arguing for.
+
+   Two: this file owns *where* things sit and *how text is set*; components own what they look like. The .prose grid below is the only layout mechanism on the site, and components opt into its wider tracks by class rather than by re-deriving the geometry themselves. */
+
+:root {
+    /* Ink and paper. The snippet background is hard-coded to --paper's value in Snippet.astro too, because LilyPond draws onto it. */
+    --paper: #faf7f0;
+    --paper-tint: #f2ecdf;
+    --ink: #1c1a17;
+    --ink-soft: #6b6357;
+    --rule: #ded3bf;
+
+    /* Straight from stradella-rows in stradella-clef.ly: the major-chord indigo carries links and marks, and the minor-chord wine is held back for the rare moment that needs heat. */
+    --accent: #332288;
+    --accent-lift: #4c3bb5;
+    --emph: #882255;
+
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+    /* The measure, and the two wider tracks that snippets and code spill into. */
+    --prose-width: 33rem;
+    --wide-width: 46rem;
+    --prose-padding-x: 1.25rem;
+    --toc-width: 13rem;
+
+    --step-0: 1.1875rem;
+    --step-1: 1.375rem;
+    --step-2: clamp(1.5rem, 1.1rem + 1.4vw, 1.9rem);
+    --step-3: clamp(2rem, 1.4rem + 2.6vw, 3.1rem);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    /* Anchors from the table of contents shouldn't land their heading against the top edge of the window. */
+    scroll-padding-top: 3rem;
+}
+
+body {
+    margin: 0;
+    /* A full-bleed band is 100vw wide; without this it would add a horizontal scrollbar whenever a vertical one is present. */
+    overflow-x: clip;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body), Georgia, serif;
+    font-size: var(--step-0);
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* --- The prose grid -------------------------------------------------------
+
+   One grid, three useful spans. Everything lands in `text` by default; anything that needs room (an engraved example, a block of LilyPond) claims `wide`; a display statement claims `full` and runs to the edges of the viewport.
+
+   The gutters are `fr`, so they absorb whatever is left over and collapse to --prose-padding-x when there is nothing spare. The text track uses min() so it shrinks on a phone instead of overflowing. */
+
+.prose {
+    display: grid;
+    grid-template-columns:
+        [full-start] minmax(var(--prose-padding-x), 1fr)
+        [wide-start] minmax(0, calc((var(--wide-width) - var(--prose-width)) / 2))
+        [text-start] min(var(--prose-width), 100% - 2 * var(--prose-padding-x))
+        [text-end] minmax(0, calc((var(--wide-width) - var(--prose-width)) / 2))
+        [wide-end] minmax(var(--prose-padding-x), 1fr)
+        [full-end];
+}
+
+.prose > * {
+    grid-column: text;
+}
+
+/* Wide things share their left edge with the prose and grow rightwards, rather than being centred on it. Music is set ragged-right and most examples are short, so a centred snippet would float free of the paragraph that introduces it; hanging it off the same margin keeps the column of text unbroken down the page. */
+.prose > .snippet,
+.prose > .snippet-pair,
+.prose > .snippet-error,
+.prose > pre,
+.prose > iframe,
+.prose > .steps,
+.prose > .hero {
+    grid-column: text-start / wide-end;
+}
+
+.prose > .hero-text,
+.prose > .full {
+    grid-column: full;
+}
+
+/* --- Typography ----------------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 0;
+}
+
+h1 {
+    font-size: var(--step-3);
+    font-weight: 700;
+    margin-block: 0 1.5rem;
+}
+
+/* Headings mark a change of subject, so they get most of their space above. The hairline is the only rule on the page; it does the work a bigger type size would otherwise have to do. */
+h2 {
+    font-size: var(--step-2);
+    margin-block: 3.5rem 1rem;
+    padding-block-start: 0.8rem;
+    border-block-start: 1px solid var(--rule);
+}
+
+h3 {
+    font-size: var(--step-1);
+    margin-block: 2.25rem 0.6rem;
+}
+
+p,
+ul,
+ol,
+blockquote {
+    margin-block: 0 1.15rem;
+}
+
+/* The paragraph under a page title reads as a standfirst. Only a little larger: some of these run to six lines, and a full step up would make a grey slab of them. */
+h1 + p {
+    font-size: 1.25rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+}
+
+/* The hero already ends in a great deal of space, so the first heading after it doesn't need its own. */
+.hero + h2 {
+    margin-block-start: 0;
+}
+
+strong {
+    font-weight: 700;
+}
+
+a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    transition: text-decoration-color 120ms ease, color 120ms ease;
+}
+
+a:hover {
+    color: var(--accent-lift);
+    text-decoration-color: currentColor;
+}
+
+ul,
+ol {
+    padding-inline-start: 1.4rem;
+}
+
+li {
+    margin-block: 0.4rem;
+}
+
+li::marker {
+    color: var(--ink-soft);
+}
+
+hr {
+    border: 0;
+    border-block-start: 1px solid var(--rule);
+    margin-block: 3rem;
+}
+
+code {
+    font-family: var(--font-mono);
+    /* Mono faces run large next to a serif at the same nominal size. */
+    font-size: 0.86em;
+}
+
+/* Inline code, but not the code inside a fence, which the fence styles instead. */
+:not(pre) > code {
+    background: var(--paper-tint);
+    border-radius: 3px;
+    padding: 0.1em 0.35em;
+}
+
+pre {
+    background: var(--paper-tint);
+    border-inline-start: 2px solid var(--rule);
+    padding: 0.9rem 1.1rem;
+    margin-block: 1.5rem;
+    overflow-x: auto;
+    line-height: 1.5;
+}
+
+/* Shiki writes its theme's background into a style attribute, which is a flat white that reads as a misprint next to the paper. Only !important can reach past an inline style. The token colours it sets on the spans inside are left alone. */
+pre.astro-code {
+    background: var(--paper-tint) !important;
+}
+
+pre code {
+    font-size: 0.95rem;
+}
+
+/* The embed carries a fixed height attribute; override it so the video keeps its shape at any width. */
+iframe {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    margin-block: 1.75rem;
+    background: var(--paper-tint);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+blockquote {
+    border-inline-start: 2px solid var(--rule);
+    padding-inline-start: 1.1rem;
+    color: var(--ink-soft);
+    font-style: italic;
+}
+
+/* --- Page furniture ------------------------------------------------------- */
+
+.site-header {
+    border-block-end: 1px solid var(--rule);
+}
+
+.site-header__inner,
+.site-footer__inner {
+    max-width: calc(var(--wide-width) + 2 * var(--toc-width));
+    margin-inline: auto;
+    padding-inline: var(--prose-padding-x);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem 1.5rem;
+}
+
+.site-header__inner {
+    padding-block: 1rem;
+}
+
+.site-title {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    margin-inline-end: auto;
+}
+
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.9375rem;
+}
+
+.site-nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+    color: var(--accent);
+}
+
+.site-nav a[aria-current="page"] {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+}
+
+.site-footer {
+    margin-block-start: 5rem;
+    border-block-start: 1px solid var(--rule);
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+}
+
+.site-footer__inner {
+    padding-block: 1.75rem 3rem;
+}
+
+/* --- Article shell -------------------------------------------------------- */
+
+main {
+    display: block;
+    padding-block-start: 3rem;
+}
+
+/* Wide enough for the table of contents to live in the right margin. The empty column on the left is the same width, so the prose stays centred in the window rather than shifting off to one side. */
+@media (min-width: 78rem) {
+    .article--with-toc {
+        display: grid;
+        grid-template-columns: var(--toc-width) minmax(0, 1fr) var(--toc-width);
+        align-items: start;
+    }
+
+    .article--with-toc > .prose {
+        grid-column: 2;
+    }
+
+    .article--with-toc > .toc {
+        grid-column: 3;
+    }
+}

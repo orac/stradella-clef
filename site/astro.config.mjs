@@ -1,5 +1,5 @@
-import { defineConfig } from 'astro/config';
-import starlight from '@astrojs/starlight';
+import { defineConfig, fontProviders } from 'astro/config';
+import mdx from '@astrojs/mdx';
 import { satteri } from '@astrojs/markdown-satteri';
 import snippetSource from './plugins/snippet-source.mjs';
 
@@ -20,21 +20,31 @@ export default defineConfig({
       // interesting parts of a .ly file are Scheme anyway --- and mapping the
       // alias means ```lilypond fences highlight instead of failing the build.
       langAlias: { lilypond: 'scheme' },
+      theme: 'github-light',
     },
   },
-  integrations: [
-    starlight({
-      title: 'Stradella clef',
-      description:
-        'A tabular notation for the Stradella bass of an accordion, for LilyPond.',
-      social: [
-        {
-          icon: 'github',
-          label: 'GitHub',
-          href: 'https://github.com/orac/stradella-clef',
-        },
-      ],
-      sidebar: [{ label: 'Using the library', link: '/using/' }],
-    }),
+  // Astro downloads and self-hosts these at build time, so the pages make no
+  // request to Google. Fraunces sets the display lines; Source Serif 4 sets
+  // everything you actually read.
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: 'Fraunces',
+      cssVariable: '--font-display',
+      weights: ['500 800'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['Georgia', 'serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Source Serif 4',
+      cssVariable: '--font-body',
+      weights: ['400 700'],
+      styles: ['normal', 'italic'],
+      subsets: ['latin'],
+      fallbacks: ['Georgia', 'serif'],
+    },
   ],
+  integrations: [mdx()],
 });

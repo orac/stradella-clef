@@ -1,0 +1,79 @@
+---
+/**
+ * Steps — a numbered sequence you're expected to carry out, as opposed to an ordinary ordered list you're expected to read.
+ *
+ * Wrap a markdown ordered list; each item gets a numbered marker and the line down the side ties the sequence together, so a code block inside a step still reads as part of that step.
+ *
+ *   <Steps>
+ *
+ *   1. Save this file next to your score:
+ *
+ *       <SaveFile … />
+ *
+ *   2. Include it from your score:
+ *
+ *   </Steps>
+ */
+---
+
+<div class="steps">
+    <slot />
+</div>
+
+<style>
+    .steps {
+        margin-block: 1.5rem;
+    }
+
+    .steps :global(ol) {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        counter-reset: step;
+    }
+
+    .steps :global(ol > li) {
+        counter-increment: step;
+        position: relative;
+        margin: 0;
+        padding-inline-start: 2.75rem;
+        padding-block-end: 1.25rem;
+        /* The line runs between the markers, and the last item's border is hidden behind its own marker's negative space rather than being special-cased. */
+        border-inline-start: 1px solid var(--rule);
+        margin-inline-start: 0.875rem;
+    }
+
+    .steps :global(ol > li:last-child) {
+        border-inline-start-color: transparent;
+        padding-block-end: 0;
+    }
+
+    .steps :global(ol > li)::before {
+        content: counter(step);
+        position: absolute;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        transform: translateX(-50%);
+        display: grid;
+        place-items: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 50%;
+        background: var(--paper-tint);
+        border: 1px solid var(--rule);
+        color: var(--ink-soft);
+        font-family: var(--font-display), Georgia, serif;
+        font-size: 0.875rem;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+    }
+
+    /* The first line of a step should sit level with its number, not start a paragraph's worth below it. */
+    .steps :global(ol > li > :first-child) {
+        margin-block-start: 0;
+    }
+
+    .steps :global(ol > li > :last-child) {
+        margin-block-end: 0;
+    }
+</style>

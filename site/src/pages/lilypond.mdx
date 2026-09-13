@@ -1,12 +1,12 @@
 ---
-title: Using LilyPond
+layout: ../layouts/Article.astro
+title: Writing accordion parts with LilyPond
 description: Download stradella-clef.ly, include it in a score, and write three styles of notation from the same source.
 ---
-import { Steps } from '@astrojs/starlight/components';
-import { SaveFile } from 'starlight-save-file-component';
-import Snippet from '../../components/Snippet.astro';
+import Steps from '../components/Steps.astro';
+import SaveFile from '../components/SaveFile.astro';
+import Snippet from '../components/Snippet.astro';
 
-# Writing accordion parts with LilyPond
 LilyPond is an open-source sheet music engraving software. Its main value is that insetad of a WYSIWYG editor where you have to drag things around to a good layout, and copy-paste repetitive music, you input just the music and LilyPond decides how to lay it out, with good spacing, no collisions, etc.
 
 The stradella-clef library for LilyPond lets you engrave **all three styles** of bass from a single source: full chords, single notes with text above, or the new Stradella clef. If you're using LilyPond for the first time, this video teaches you how to install it and write your first accordion part:
@@ -57,7 +57,7 @@ To use the two classical styles of notation, apply the `\stradellaTriads` or `\s
 ```
 </Snippet>
 
-Both commands ignore the octave you write, and put root notes in the bottom half of the staff and chords in the top half, as is the convention. Don't use `\relative`, `\fixed` or `\transpose` around the command, or they will overwrite the octaves. 
+Both functions ignore the octave you write, and put root notes in the bottom half of the staff and chords in the top half, as is the convention. **Don't** use `\relative`, `\fixed` or `\transpose` around the function, or they will overwrite the octaves. 
 
 ```lilypond
 % WRONG!
@@ -66,7 +66,7 @@ Both commands ignore the octave you write, and put root notes in the bottom half
 }
 ```
 
-You can use `\transpose` *inside* the command (before it sets the octave) but **you don't need to use** `\relative` or `\fixed` at all.
+You can use `\transpose` **inside** the music, but **you don't need to use** `\relative` or `\fixed` at all.
 
 <Snippet showSource>
 ```lilypond
@@ -81,7 +81,7 @@ You can use `\transpose` *inside* the command (before it sets the octave) but **
 ```
 </Snippet>
 
-Though it's a music function like any other, it's probably easiest to use it in the `\score` block itself rather than on individual variable definitions. That way there's only one place to change styles. 
+It's probably easiest to use it in the `\score` block itself rather than on individual variable definitions, unless you're switching between different styles mid-piece.
 
 ```lilypond
 vocalPart = \relative c' { ... }
@@ -97,11 +97,9 @@ bassPart = { ... }
 >>
 ```
 
-But if you want to mix and match the styles on different staves or in different sections, you can do that too.
-
 ## Writing chords
 
-The library gives you a command for each row / each chord shape: `\maj` `\min` `\sev` and `\dimin`. (`\dimin` is longer because `\dim` gives you a diminuendo.) Each command takes a single note as an argument. Note that unlike articulations and `\chordmode`, the command comes **before** the note name/duration, so here's an alternating bass on C major:
+The library gives you a command for each row / each chord shape: `\maj` `\min` `\sev` and `\dimin`. (`\dimin` is longer because `\dim` gives you a diminuendo.) Each command takes a single note as an argument. Unlike articulations and `\chordmode`, the command comes **before** the note name/duration, so here's an alternating bass on C major:
 
 <Snippet showSource>
 ```lilypond
@@ -114,7 +112,7 @@ The library gives you a command for each row / each chord shape: `\maj` `\min` `
 
 The first C and the G are bass/root notes, and the other Cs are major chords.
 
-You can omit pitches or durations according to the usual LilyPond rules. Stradella clef can represent chord combining, so you can also use each command on individual notes of a chord, e.g. for chord combining:
+You can omit pitches or durations according to the usual LilyPond rules. Stradella clef can represent chord combining, so you can also use each command on individual notes of a chord:
 
 <Snippet showSource>
 ```lilypond
@@ -138,6 +136,6 @@ The `\cnt` command works the same as the others and gives you a counterbass note
 ```
 </Snippet>
 
-# Conclusion
+## Conclusion
 
 With LilyPond, stradella-clef.ly gives you an easy way to write accordion music and switch between the different notation styles without inputting all the notes again. You could generate a Stradella clef and a traditional part and let people choose which to play.
