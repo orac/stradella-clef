@@ -42,7 +42,7 @@ I've created a `Stradella_ambitus_engraver` to add this capability for Stradella
 
 Normal (*volta*) repeats are visually heavy, and they span the full height of a system: every instrument has to repeat at the same time. What if one instrument (such as drums) is just playing the same phrase over and over? This is what *percent* repeats are for. They're mostly used for percussion or rhythm parts in ensemble music. Their main advantage is that you don't need to read every bar to know it's the same as the last bar, and then when you get some different music, it's obvious that it's coming up. 
 
-Although they're not often used in accordion music, they're a good fit for bass parts where you play the same bass pattern on the same chord for a while, even if the treble part doesn't repeat. One of the big advantages of Stradella clef is that it reduces the duplication &mdash; it makes samey music **look** the same &mdash; and percent repeats are a good complement to that, but **they work with bass clef too**.
+Although they're not often used in accordion music, they're a good fit for bass parts where you play the same bass pattern on the same chord for a while, even if the treble part doesn't repeat. One of the big advantages of Stradella clef is that it makes samey music **look** the same. Percent repeats are a good complement to that, but **they work with bass clef too**.
 
 Here's an example where the percent repeats let you focus on the melody without looking at the repeated bassline. When the end of the phrase has a tricky left-hand part, it's easier to see it's coming.
 
@@ -50,13 +50,16 @@ Here's an example where the percent repeats let you focus on the melody without 
 ```lilypond
 \new PianoStaff <<
     \new Staff {
-        \relative c'' {
+        \time 2/2
+        \relative c''' {
             g1 g2. f4 | g a2.~|1
             g4 a2 g4 | a4 g2 fs4 | f1~1 |
         }
     }
     \new StradellaStaff {
-        \repeat percent 6 { c \maj c g \maj c }
+        \time 2/2
+        \clef stradella
+        \repeat percent 6 { c4 \maj c g \maj c }
         << { d2 \cnt b a g } \\ \repeat unfold 4 { r4 \sev g } >>
     }
 >>
@@ -77,13 +80,13 @@ Unlike the other suggestions on this page, I wouldn't start using this in every 
 ```lilypond
 \clef treble
 c''2:16 c''2: |
-\*2 { \*7 c''16 r } |
+\repeat unfold 2 { \repeat unfold 7 c''16 r } |
 ```
 </Snippet>
 
-In baroque music, there's often a lot of editorial annotations to show you all the decorations and ornaments that should be played but were only implied by convention in the original sheet music &mdash; conventions that depend on when the piece was written. They use all kinds of ornament marks and articulations like pralls, mordents, turns, and trills. Some arrangers will just write the ornaments and leave the interpretation to you, while others will add a legend at the start or end of the score to show how each mark is to be interpreted (which of course you can ignore if you prefer).
+In baroque music, there's often a lot of editorial annotations to show you all the **decorations and ornaments** that should be played but were only **implied by convention** in the original sheet music &mdash; conventions that depend on when and where the piece was written. They use all kinds of ornament marks and articulations like pralls, mordents, turns, and trills. Some arrangers will just write the ornaments and leave the interpretation to you, while others will add a **legend** at the start or end of the score to show each ornament written out in full (which you can still ignore, of course).
 
-Folk music, jazz, and other dance forms like tango all value the individual player's live interpretation of "standard" tunes, so accordion also has a lot of implied ornaments and conventions: such as ceilidh players adding very short grace notes a semitone up or down from the main note. The biggest convention is, of course, the alternating "oom-pah" bass. For that reason, I've found it beneficial to reuse the tremolo symbol to mean "alternating bass". That is, the first bar here means the same as the second bar. I've written it in both standard and Stradella bass.
+**Folk**, **jazz**, and dance forms like **ceilidh** and **tango** all value the individual player's live interpretation of "standard" tunes, so accordion also has a lot of implied ornaments and conventions: such as ceilidh players adding very short grace notes a semitone up or down from the main note. The biggest convention is, of course, the alternating "oom-pah" bass. For that reason, I've found it beneficial to reuse the tremolo symbol to mean "alternating bass". That is, the first bar here means the same as the second bar. I've written it in both old-style and Stradella bass.
 
 <Snippet context="score">
 ```lilypond
