@@ -16,7 +16,6 @@ interface Props {
 
 const { title, description } = Astro.props;
 
-// The home page is the site's name; every other page hangs off it.
 const pageTitle = Astro.url.pathname === import.meta.env.BASE_URL ? title : `${title} — Stradella clef`;
 
 // A page joins the nav by giving itself a `nav` block in its frontmatter, rather than being listed here — so a new page (about.mdx, say) appears without editing this layout. The index page deliberately has no `nav` block: it's already reachable from the site title.
@@ -69,7 +68,7 @@ const here = Astro.url.pathname.replace(/\/$/, '');
 
         <footer class="site-footer">
             <div class="site-footer__inner">
-                <p>Stradella clef is free to use, copy and teach. The LilyPond library is on <a href="https://github.com/orac/stradella-clef">GitHub</a>.</p>
+                <p>Stradella clef is free to use, copy and teach. The LilyPond library is on <a href="https://github.com/orac/stradella-clef">GitHub</a>. You may use and reproduce this site under the same terms as Lilypond itself.</p>
             </div>
         </footer>
     </body>

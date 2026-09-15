@@ -1,0 +1,74 @@
+---
+layout: ../layouts/Article.astro
+title: Example Stradella clef sheets
+description: Who made this?
+nav:
+  label: Examples
+  order: 4
+---
+import Cta from '../components/Cta.astro';
+import SaveFile from '../components/SaveFile.astro';
+import Snippet from '../components/Snippet.astro';
+
+Once you've [learned how Stradella clef works](../play/), you'll want to practise playing some real pieces. No commercial sheet music vendor is selling Stradella clef sheets yet, but here's some free sheet music you can download and play today. You can also find the LilyPond source files for these sheets [on GitHub](https://github.com/orac/stradella-clef/tree/main/examples) to help you [learn to make your own sheets](../lilypond/).
+
+All of these show [ambitus](../other-notation/#ambitus) at the start of the piece.
+
+## Auld Lang Syne
+
+An easy and familiar tune, this is the perfect first piece for beginners. The bass line is all crotchets (quarter notes) with major, minor, seventh chords, plus a few counterbass notes to add interest.
+
+<SaveFile title="Auld Lang Syne accordion sheet" href="https://raw.githubusercontent.com/orac/stradella-clef/refs/heads/main/examples/Auld%20Lang%20Syne.pdf" />
+
+## Good Ale
+
+One of England's less-known folk tunes, I added my own intro and bridge to the traditional melody and words.
+
+<SaveFile title="Good Ale accordion sheet" href="https://raw.githubusercontent.com/orac/stradella-clef/refs/heads/main/examples/Good%20Ale.pdf" />
+
+The reading and G major key (one sharp) are still beginner-friendly, but there's some additions that make it a little more complex than Auld Lang Syne:&mdash;
+
+1. The 3/2&ndash;2/2 time changes may surprise beginners. 
+2. The end of each chorus is marked by holding the root and major buttons together, but there's no real [chord combining](../play/#chord-combining).
+
+    <Snippet context="score">
+    ```lilypond
+    \new PianoStaff <<
+        \new Staff {
+            \key g \major
+            \time 3/2
+            \relative c' {
+                fs2 g r4 \breathe g8 a
+            }
+        }
+        \new StradellaStaff {
+            \clef stradella
+            d4 \sev d <g \maj g>2 r2
+        }
+    >>
+    ```
+    </Snippet>
+
+    Whether this does anything depends on the bass registration: some instruments have a bass register where the root notes are an octave lower than the chords, but many don't want the extra weight and volume of another rank of bass reeds. If it sounds the same on your box, just play the major alone.
+
+3. Some of the long notes have a *prall* ornament on them, which you might not have seen before. This is a simple ornament that just goes up to the next note and back down.  I'd say both the second and third bar are reasonable interpretations of how to play the ornament in the first bar.
+
+    <Snippet>
+    ```lilypond
+    \relative {
+        \key g \major
+        g'2\prall r2 | g8( a g4) r2 | g16( a g4.) r2
+    }
+    ```
+    </Snippet>
+
+4. The chord names are also shown above each system. This is more as an aid for letting a guitarist or similar play along with you, but you may find they help you to learn which bass note is which.
+
+I [play this out](https://youtu.be/-7mgTw4Mjzs?t=1257) and it's a fun tune. I like to ham up slurring the words increasingly as the song goes on, before "sobering up" to belt out the last line.
+
+<Cta actions={[
+    {
+        text: 'Now make your own',
+        path: 'lilypond'
+    }
+]} />

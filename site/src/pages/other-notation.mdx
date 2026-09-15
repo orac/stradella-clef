@@ -1,0 +1,113 @@
+---
+layout: ../layouts/Article.astro
+title: Other notation features for accordion parts
+description: Stradella clef is new, but there are other little-used sheet music features that can benefit accordion players.
+nav:
+  label: Other notation
+  order: 5
+---
+import SaveFile from '../components/SaveFile.astro';
+import Snippet from '../components/Snippet.astro';
+
+Here are some other standard features of sheet music that I've found helpful for accordion. I've seen them in parts for other instruments and been surprised that they're not more common on accordion, because they can be very helpful to the player. They're all simple to [add with LilyPond](../lilypond/).
+
+## Ambitus
+
+This originates from vocal music: it's a little widget at the start of a staff, before the clef, to show the range of notes in that part. If you're a singer, you can compare that to your vocal range so you can know before you start whether the part is **within your range** &mdash; or if there are multiple parts in harmony, to help you **match parts to singers**.
+
+It's rarely used in instrumental music, but players of smaller boxes might appreciate it. For example, most full-size accordions start the treble side on an F, but my main box starts on a G. Many times I've started playing a piece then only noticed part-way through that **it has a note I can't play**. If I'd seen the range at the start, I could have used a lower register and played an octave higher on the keyboard, but the composer/engraver didn't bother to let me know.
+
+With Stradella clef, displaying the ambitus or range of the bass side also becomes useful. If you have a 72 or 80 bass, you can see at a glance if the bass part was written for a larger instrument, making you move hands quickly between the top and bottom of the board.
+
+It's really easy to add ambitus to any part in LilyPond: [the Notation Reference tells you how](https://lilypond.org/doc/v2.23/Documentation/notation/displaying-pitches#ambitus). But there's a complication: the built-in `Ambitus_engraver` doesn't understand Stradella clef.
+
+I've created a `Stradella_ambitus_engraver` to add this capability for Stradella clef. It's a separate file so you can choose to download it only if you use ambitus markings. You add it to the Staff or Voice in exactly the same way as the built-in `Ambitus_engraver`.
+
+<SaveFile title="stradella-ambitus.ly" href="https://raw.githubusercontent.com/orac/stradella-clef/refs/heads/main/stradella-ambitus.ly" />
+
+```lilypond
+\include "stradella-ambitus.ly"
+
+\new StradellaStaff \with {
+    \consists "Stradella_ambitus_engraver"
+} {
+    \clef stradella
+    ... bass music ...
+}
+```
+
+[All the free downloads on this site](../examples/) have ambitus marks. Since it only **adds information**, I use it on every part I write. There's no harm if the player doesn't understand it: they can just ignore it, and if they see a few examples, they'll learn it on their own.
+
+## Percent repeats
+
+Normal (*volta*) repeats are visually heavy, and they span the full height of a system: every instrument has to repeat at the same time. What if one instrument (such as drums) is just playing the same phrase over and over? This is what *percent* repeats are for. They're mostly used for percussion or rhythm parts in ensemble music. Their main advantage is that you don't need to read every bar to know it's the same as the last bar, and then when you get some different music, it's obvious that it's coming up. 
+
+Although they're not often used in accordion music, they're a good fit for bass parts where you play the same bass pattern on the same chord for a while, even if the treble part doesn't repeat. One of the big advantages of Stradella clef is that it reduces the duplication &mdash; it makes samey music **look** the same &mdash; and percent repeats are a good complement to that, but **they work with bass clef too**.
+
+Here's an example where the percent repeats let you focus on the melody without looking at the repeated bassline. When the end of the phrase has a tricky left-hand part, it's easier to see it's coming.
+
+<Snippet context="score">
+```lilypond
+\new PianoStaff <<
+    \new Staff {
+        \relative c'' {
+            g1 g2. f4 | g a2.~|1
+            g4 a2 g4 | a4 g2 fs4 | f1~1 |
+        }
+    }
+    \new StradellaStaff {
+        \repeat percent 6 { c \maj c g \maj c }
+        << { d2 \cnt b a g } \\ \repeat unfold 4 { r4 \sev g } >>
+    }
+>>
+```
+</Snippet>
+
+In LilyPond, you can write these with `\repeat percent N { music }` or the v2.26 shorthand `\%N { music }`; [learn more in LilyPond's Notation Reference](https://lilypond.org/doc/latest/Documentation/notation/short-repeats#percent-repeats). LilyPond makes it easy to switch between percent repeats and writing the notes out fully, so you can produce a "beginner" part for people who might not have seen it before, and an "easier to play" part for people who know the notation.
+
+LilyPond can also automatically add counts to the percent marks, so you know how many bars to count to without having to count them on the page. This is indispensible for percussion music (where you often have no other cues to keep you in sync), but needless if you're playing a melody part instead of counting bars.
+
+## Tremolo marks
+
+Unlike the other suggestions on this page, I wouldn't start using this in every part now, but I commend the idea to you, and I hope you will experiment with it in your own music and develop the idea further.
+
+[*Tremolo* marks](https://lilypond.org/doc/latest/Documentation/notation/short-repeats#tremolo-repeats) are common for bowed strings, where it's common to rapidly bow back and forth on one or two strings, and for rolls on percussion instruments. They're a shorthand for printing lots of the same note, but they also tell you a bit about intended phrasing. For example, a drummer *might* play the first bar like the second bar:&mdash;
+
+<Snippet>
+```lilypond
+\clef treble
+c''2:16 c''2: |
+\*2 { \*7 c''16 r } |
+```
+</Snippet>
+
+In baroque music, there's often a lot of editorial annotations to show you all the decorations and ornaments that should be played but were only implied by convention in the original sheet music &mdash; conventions that depend on when the piece was written. They use all kinds of ornament marks and articulations like pralls, mordents, turns, and trills. Some arrangers will just write the ornaments and leave the interpretation to you, while others will add a legend at the start or end of the score to show how each mark is to be interpreted (which of course you can ignore if you prefer).
+
+Folk music, jazz, and other dance forms like tango all value the individual player's live interpretation of "standard" tunes, so accordion also has a lot of implied ornaments and conventions: such as ceilidh players adding very short grace notes a semitone up or down from the main note. The biggest convention is, of course, the alternating "oom-pah" bass. For that reason, I've found it beneficial to reuse the tremolo symbol to mean "alternating bass". That is, the first bar here means the same as the second bar. I've written it in both standard and Stradella bass.
+
+<Snippet context="score">
+```lilypond
+<<
+    \new Staff {
+        \clef bass
+        \stradellaSymbols {
+            \maj c1:16 |
+            c4 \maj c g \maj c |
+        }
+    }
+    \new StradellaStaff {
+        \clef stradella
+            \maj c1:16 |
+            c4 \maj c g \maj c |
+    }
+>>
+```
+</Snippet>
+
+It's quite different from the usual meaning of tremolo beams, so I wouldn't recommend this in music for a broad audience, but it has some advantages to consider:&mdash;
+
+1. It's a lot more compact horizontally.
+2. When you're **not** using Stradella clef, it's a lot easier to recognise this as an alternating bass pattern than writing the notes out fully. Even *with* Stradella clef, it's still a little easier. More importantly, if you write all the alternating bass bars this way, it becomes obvious when the pattern changes.
+3. It specifies *less*. Just as with baroque ornaments, which you can ignore or interpret how you like, showing fewer notes makes it easier to improvise something different. For example, it's common to play the third (E here) instead of the fifth (G) on the third beat of the bar, especially if the next bar is going to start on a G. You can choose to write that out to give more direction to the player, or leave more room for interpretation.
+
+Please do experiment with tremolo and other ornament marks in your scores

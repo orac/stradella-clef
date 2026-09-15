@@ -6,6 +6,7 @@ nav:
   label: LilyPond
   order: 2
 ---
+import Cta from '../components/Cta.astro';
 import Steps from '../components/Steps.astro';
 import SaveFile from '../components/SaveFile.astro';
 import Snippet from '../components/Snippet.astro';
@@ -131,7 +132,7 @@ The `\cnt` command works the same as the others and gives you a counterbass note
 <Snippet showSource>
 ```lilypond
 \clef stradella
-\cnt e4                % This is on the C row
+\cnt e4  % lives on the C line
 \clef bass
 \stradellaTriads {
     \cnt e4
@@ -142,3 +143,10 @@ The `\cnt` command works the same as the others and gives you a counterbass note
 ## Conclusion
 
 With LilyPond, stradella-clef.ly gives you an easy way to write accordion music and switch between the different notation styles without inputting all the notes again. You could generate a Stradella clef and a traditional part and let people choose which to play.
+
+<Cta actions={[
+    {
+        text: "See it in real parts",
+        path: 'examples'
+    }
+]} />

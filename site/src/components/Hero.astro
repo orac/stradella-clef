@@ -2,22 +2,24 @@
 /**
  * Hero — the opening of the landing page: the name, the promise, and the two ways in.
  *
- * The expansiveness comes from the space around the words rather than from a coloured band, so the hero reads as the first page of a book rather than as a product banner. The one exception is the mark itself: the same glyph that stands in for the S in the masthead reappears here at furniture scale, tipped and set in brass, because this is the one place on the site allowed a proper flourish. Actions are handed straight to Cta.
+ * The words now sit over a photograph of a Stradella bass mechanism, rather than the empty paper the rest of the site holds to — this is the one place on the site allowed a proper flourish. The photo is a `full` track item of the .prose grid (global.css), stacked in the same grid row as the header content so it reaches the true viewport edge and stretches to the header's height, the same mechanism HeroText uses for its own full-bleed band. A vignette — darkest in the middle, where the words sit, easing off towards all four edges — plus a text-shadow on the title and tagline, and solid backgrounds under both actions, keep everything legible without flattening the photo into a plain backdrop. Actions are handed straight to Cta.
  */
+import { Image } from 'astro:assets';
 import Cta from './Cta.astro';
 
 interface Props {
     tagline: string;
     actions: { text: string; path: string }[];
+    image: ImageMetadata;
 }
 
-const { tagline, actions } = Astro.props;
+const { tagline, actions, image } = Astro.props;
 ---
 
+<div class="hero__bg">
+    <Image src={image} alt="" role="presentation" widths={[640, 960, 1440, 1920, 2560]} sizes="100vw" />
+</div>
 <header class="hero">
-    <svg class="hero__mark" viewBox="0 0 14 20" aria-hidden="true" focusable="false">
-        <path d="M10.443,1.834l1.154,-1.654l0.937,-0l-2.811,8.521l-0.217,-1.477c-0.194,-1.072 0.335,-4.211 -0.704,-5.186c-1.039,-0.975 -1.627,-1.05 -2.978,-1.05c-1.129,-0 -2.052,0.338 -2.771,1.014c-0.718,0.676 -1.077,1.502 -1.077,2.478c-0,0.608 0.136,1.141 0.41,1.599c0.274,0.458 0.682,0.83 1.225,1.117c0.543,0.287 1.567,0.592 3.073,0.915c2.112,0.46 3.594,0.925 4.445,1.395c0.851,0.47 1.486,1.063 1.905,1.777c0.419,0.714 0.628,1.55 0.628,2.508c0,1.71 -0.575,3.128 -1.725,4.252c-1.15,1.125 -2.636,1.687 -4.458,1.687c-1.958,0 -3.66,-0.632 -5.106,-1.898l-1.449,1.77l-0.924,0l3.018,-8.349l0.337,1.65c0.142,1.136 -0.33,3.835 0.48,4.646c1.211,1.21 2.156,1.258 3.721,1.258c1.266,-0 2.299,-0.374 3.098,-1.123c0.8,-0.748 1.2,-1.657 1.2,-2.726c-0,-0.607 -0.15,-1.139 -0.449,-1.597c-0.3,-0.458 -0.774,-0.842 -1.424,-1.155c-0.65,-0.312 -1.929,-0.69 -3.836,-1.135c-2.095,-0.496 -3.524,-1.052 -4.285,-1.668c-1.069,-0.872 -1.603,-2.108 -1.603,-3.707c-0,-1.668 0.532,-3.034 1.597,-4.099c1.065,-1.065 2.426,-1.597 4.086,-1.597c0.795,-0 1.552,0.141 2.27,0.423c0.719,0.283 1.463,0.753 2.233,1.411Z"></path>
-    </svg>
     <h1>Stradella&nbsp;clef</h1>
     <p class="hero__tagline">{tagline}</p>
     <div class="hero__actions">
@@ -29,36 +31,43 @@ const { tagline, actions } = Astro.props;
     /* No rule along the bottom: the first h2 brings its own, and two hairlines a few centimetres apart would read as a mistake. */
     .hero {
         position: relative;
-        padding-block: clamp(3rem, 9vw, 7rem) clamp(3rem, 7vw, 5rem);
+        padding-block: clamp(4rem, 14vw, 9rem) clamp(3.5rem, 9vw, 6rem);
+    }
+
+    /* Shares the header's grid row (set alongside .hero in global.css) so it stretches to the same height, and paints behind it by simple document order — no z-index needed. */
+    .hero__bg {
+        position: relative;
         overflow: clip;
     }
 
-    /* The one flourish on the site: the masthead's own glyph, blown up to furniture scale and tipped back like a printer's block set slightly askew. It sits behind the words it names, so it reads as texture rather than as a second headline. */
-    .hero__mark {
+    .hero__bg :global(img) {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* A vignette rather than a directional wash: darkest where the words actually sit, easing off towards all four edges so the mechanism stays readable as a photo at the margins. */
+    .hero__bg::after {
+        content: '';
         position: absolute;
-        inset-block-start: clamp(-2rem, -4vw, -1rem);
-        inset-inline-end: clamp(-2rem, 2vw, 3rem);
-        width: clamp(9rem, 22vw, 16rem);
-        height: auto;
-        fill: var(--spark);
-        opacity: 0.16;
-        transform: rotate(-8deg);
-        z-index: 0;
+        inset: 0;
+        background: radial-gradient(ellipse 62% 75% at 50% 50%, color-mix(in srgb,black 58%, transparent) 0%, color-mix(in srgb, black 30%, transparent) 55%, transparent 90%);
     }
 
     h1 {
         position: relative;
-        z-index: 1;
         font-size: clamp(2.75rem, 1.2rem + 6.5vw, 5.5rem);
         font-weight: 800;
         line-height: 1;
         letter-spacing: -0.035em;
         margin: 0;
+        color: var(--paper);
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.55);
     }
 
     .hero__tagline {
         position: relative;
-        z-index: 1;
         max-width: 24ch;
         margin-block: 1.25rem 0;
         font-family: var(--font-display), Georgia, serif;
@@ -66,13 +75,36 @@ const { tagline, actions } = Astro.props;
         font-weight: 400;
         font-style: italic;
         line-height: 1.3;
-        color: var(--ink-soft);
+        color: var(--paper);
         text-wrap: balance;
+        text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.55);
     }
 
     .hero__actions {
         position: relative;
-        z-index: 1;
         margin-block: clamp(2rem, 5vw, 3rem) 0;
+    }
+
+    /* The plain-text action elsewhere just tints on hover; here it needs to be a button in its own right, since there's no scrim left to lift it off the photo. Dark-grey fill with a brass outline, echoing the filled action's colour without competing with it. */
+    .hero__actions :global(.cta__action:not(.cta__action--first)) {
+        padding: 0.65rem 1.25rem;
+        background: color-mix(in srgb, var(--ink) 62%, transparent);
+        border: 1.5px solid var(--spark);
+        border-radius: 2px;
+        color: var(--paper);
+        font-weight: 700;
+        transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+    }
+
+    .hero__actions :global(.cta__action:not(.cta__action--first):hover) {
+        background: color-mix(in srgb, var(--ink) 78%, transparent);
+        border-color: var(--spark-lift);
+        transform: translateY(-1px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .hero__actions :global(.cta__action:not(.cta__action--first)) {
+            transition: none;
+        }
     }
 </style>

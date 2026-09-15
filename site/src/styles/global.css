@@ -97,8 +97,15 @@ body {
 }
 
 .prose > .hero-text,
-.prose > .full {
+.prose > .full,
+.prose > .hero__bg {
     grid-column: full;
+}
+
+/* The hero's background photo shares the header's row so it stretches to the header's height and paints behind it, rather than the two stacking as separate rows. */
+.prose > .hero__bg,
+.prose > .hero {
+    grid-row: 1;
 }
 
 /* --- Typography ----------------------------------------------------------- */
