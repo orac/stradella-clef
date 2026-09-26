@@ -86,14 +86,15 @@ body {
 }
 
 /* Wide things share their left edge with the prose and grow rightwards, rather than being centred on it. Music is set ragged-right and most examples are short, so a centred snippet would float free of the paragraph that introduces it; hanging it off the same margin keeps the column of text unbroken down the page. */
-.prose > .snippet,
 .prose > .snippet-pair,
 .prose > .snippet-error,
-.prose > pre,
-.prose > iframe,
-.prose > .steps,
 .prose > .hero {
     grid-column: text-start / wide-end;
+}
+
+/* Embeds are centred in the viewport on the wide track, like a figure. */
+.prose > iframe {
+    grid-column: wide;
 }
 
 .prose > .hero-text,

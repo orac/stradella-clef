@@ -9,13 +9,24 @@ nav:
 import SaveFile from '../components/SaveFile.astro';
 import Snippet from '../components/Snippet.astro';
 
-Here are some other standard features of sheet music that I've found helpful for accordion. I've seen them in parts for other instruments and been surprised that they're not more common on accordion, because they can be very helpful to the player. They're all simple to [add with LilyPond](../lilypond/).
+Here are some other standard features of sheet music that I've found helpful for accordion. I've seen them in parts for other instruments and been surprised that they're not more common on accordion, because they can be very helpful to the player. They're all simple to [add with LilyPond](../lilypond/). But if you've only just learned Stradella clef, I'd suggest you practise with that for a bit before reading this page: there's a lot of new ideas here.
 
 ## Ambitus
 
 This originates from vocal music: it's a little widget at the start of a staff, before the clef, to show the range of notes in that part. If you're a singer, you can compare that to your vocal range so you can know before you start whether the part is **within your range** &mdash; or if there are multiple parts in harmony, to help you **match parts to singers**.
 
-It's rarely used in instrumental music, but players of smaller boxes might appreciate it. For example, most full-size accordions start the treble side on an F, but my main box starts on a G. Many times I've started playing a piece then only noticed part-way through that **it has a note I can't play**. If I'd seen the range at the start, I could have used a lower register and played an octave higher on the keyboard, but the composer/engraver didn't bother to let me know.
+It's rarely used in instrumental music, but players of smaller boxes might appreciate it. For example, most full-size accordions start the treble side on an F, but my main box starts on a G. Many times I've started playing a piece then only noticed part-way through that **it has the bottom F I can't play**. If I'd seen the range at the start, I could have used a lower register and played an octave higher on the keyboard, but the composer/engraver didn't know how to tell me up-front.
+
+<Snippet context="score">
+```lilypond
+\new Staff \with {
+    \consists "Ambitus_engraver"
+} \relative c' {
+    \clef treble
+    c4 g' b f,
+}
+```
+</Snippet>
 
 With Stradella clef, displaying the ambitus or range of the bass side also becomes useful. If you have a 72 or 80 bass, you can see at a glance if the bass part was written for a larger instrument, making you move hands quickly between the top and bottom of the board.
 
@@ -86,15 +97,15 @@ c''2:16 c''2: |
 
 In baroque music, there's often a lot of editorial annotations to show you all the **decorations and ornaments** that should be played but were only **implied by convention** in the original sheet music &mdash; conventions that depend on when and where the piece was written. They use all kinds of ornament marks and articulations like pralls, mordents, turns, and trills. Some arrangers will just write the ornaments and leave the interpretation to you, while others will add a **legend** at the start or end of the score to show each ornament written out in full (which you can still ignore, of course).
 
-**Folk**, **jazz**, and dance forms like **ceilidh** and **tango** all value the individual player's live interpretation of "standard" tunes, so accordion also has a lot of implied ornaments and conventions: such as ceilidh players adding very short grace notes a semitone up or down from the main note. The biggest convention is, of course, the alternating "oom-pah" bass. For that reason, I've found it beneficial to reuse the tremolo symbol to mean "alternating bass". That is, the first bar here means the same as the second bar. I've written it in both old-style and Stradella bass.
+**Folk**, **jazz**, and dance forms like **ceilidh** and **tango** all value the individual player's live interpretation of "standard" tunes, so accordion also has a lot of implied ornaments and conventions: such as ceilidh players adding very short grace notes a semitone up or down from the main note. The biggest convention is, of course, the alternating "oom-pah" bass, but in most sheet music, it's written out in full. I've found it beneficial to reuse the tremolo notation to mean "alternating bass". That is, the first bar here means the same as the second bar. I've written it in both old-style and Stradella bass.
 
 <Snippet context="score">
 ```lilypond
 <<
     \new Staff {
         \clef bass
-        \stradellaSymbols {
-            \maj c1:16 |
+        {
+            \maj c'1:16 |
             c4 \maj c g \maj c |
         }
     }
@@ -111,6 +122,6 @@ It's quite different from the usual meaning of tremolo beams, so I wouldn't reco
 
 1. It's a lot more compact horizontally.
 2. When you're **not** using Stradella clef, it's a lot easier to recognise this as an alternating bass pattern than writing the notes out fully. Even *with* Stradella clef, it's still a little easier. More importantly, if you write all the alternating bass bars this way, it becomes obvious when the pattern changes.
-3. It specifies *less*. Just as with baroque ornaments, which you can ignore or interpret how you like, showing fewer notes makes it easier to improvise something different. For example, it's common to play the third (E here) instead of the fifth (G) on the third beat of the bar, especially if the next bar is going to start on a G. You can choose to write that out to give more direction to the player, or leave more room for interpretation.
+3. It specifies **less**. Just as with baroque ornaments, which you can ignore or interpret how you like, showing fewer notes makes it easier to improvise something different. For example, it's common to play the third (E here) instead of the fifth (G) on the third beat of the bar, especially if the next bar is going to start on a G. You can choose to write that out to give more direction to the player, or leave more room for interpretation.
 
-Please do experiment with tremolo and other ornament marks in your scores
+Please do experiment with all these ideas in your scores. I've linked each one to the Lilypond documentation so you can learn how.

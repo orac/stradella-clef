@@ -68,6 +68,36 @@
         line-height: 1;
     }
 
+    /* With room in the left margin, the numbers and their line hang there, so the steps' content stays flush with the prose above and below. Below this width the margin is too narrow, and the numbers stay inline. */
+    @media (min-width: 46rem) {
+        .steps :global(ol > li) {
+            padding-inline-start: 0;
+            margin-inline-start: 0;
+            border-inline-start: 0;
+        }
+
+        /* Centre the disc on the first line's box (line-height 1.65 of --step-0), and sink the digit a little so its baseline meets the text's rather than its middle meeting the text's middle. */
+        .steps :global(ol > li)::before {
+            inset-inline-start: -1.5rem;
+            inset-block-start: calc((var(--step-0) * 1.65 - 1.85rem) / 2);
+            font-size: 1rem;
+            padding-block-start: 0.12rem;
+        }
+
+        .steps :global(ol > li)::after {
+            content: "";
+            position: absolute;
+            inset-block: 1.85rem 0;
+            inset-inline-start: -1.5rem;
+            width: 1px;
+            background: var(--rule);
+        }
+
+        .steps :global(ol > li:last-child)::after {
+            display: none;
+        }
+    }
+
     /* The first line of a step should sit level with its number, not start a paragraph's worth below it. */
     .steps :global(ol > li > :first-child) {
         margin-block-start: 0;

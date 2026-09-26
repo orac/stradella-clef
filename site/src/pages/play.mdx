@@ -6,9 +6,10 @@ nav:
   label: Read and play
   order: 1
 ---
+import Cta from '../components/Cta.astro';
 import Snippet from '../components/Snippet.astro';
 
-Whether you're an **expert player** or a **new player** who hasn't learned bass clef yet, after reading this page you'll be able to play basslines with Stradella clef. If you have your instrument to hand, try playing along with the examples.
+Whether you're an **expert player** or a **new player** who hasn't learned bass clef yet, after reading this page you'll be able to play basslines with Stradella clef. All you need is a basic understanding of sheet music, and of the accordion bass layout. (If that's still new to you, it might help to [read this first](https://accordionchords.com/tutorials/learning-harmony-on-the-accordion/#The_Stradella_system) or have the diagram open at the same time.) If you have an accordion handy, try playing along with the examples.
 
 ## The clef itself
 <Snippet context="score">
@@ -40,11 +41,7 @@ In most sheet music, the notes are arranged **in order of pitch**. Low notes at 
 
 This is easy on the right-hand of a piano accordion, where the notes are also arranged in order of pitch, but on your left hand, the notes follow the cycle of fifths. So in Stradella clef, the notes also go that way. **C is on the middle line.** Most instruments have a dimple or some other mark on the C bass button.
 
-<Snippet>
-```lilypond
-\clef stradella c4
-```
-</Snippet>
+![A C on the middle line of a Stradella clef staff, joined by a line to the C root button, which has a dimple in the middle.](../assets/diagrams/c-button.svg)
 
 The next button above the C is G, so the next space in the staff above the C is G, and so on.
 
@@ -64,7 +61,9 @@ The **E is on the top line**, and your instrument might also mark it with a text
 
 If your A♭ button is also textured like the E, the top and bottom lines are landmarks for your fingers.
 
-Notice there's no flat signs in the music for B♭, E♭, A♭. Stradella clef has **no sharp or flat signs**. In normal notation, C major is privileged and you need to add sharp and flat signs to get notes from other scales. But Stradella bass is *isomorphic* (every scale is the same shape) so Stradella clef is too. No sharp or flat signs, no key signature, no accidentals.
+![A♭, C and E on the bottom, middle and top lines of a Stradella clef staff, each joined by a line to its root button: the textured A♭, the dimpled C, and the textured E.](../assets/diagrams/landmark-buttons.svg)
+
+Notice there's no flat signs in the music for B♭, E♭, A♭. Stradella clef has **no sharp or flat signs**. In traditional notation, C major is privileged and you need to add sharp and flat signs to get notes from other scales. But Stradella bass is *isomorphic* (every scale is the same shape) so Stradella clef is too. No sharp or flat signs, no key signature, no accidentals.
 
 In treble clef, you might have learned mnemonics like Every Good Boy Deserves Football and FACE to remember which notes are on the lines and which ones are in the spaces. You may already have noticed that every second button on your bass board goes up a whole tone &mdash; thanks to the circle of fifths. Stradella clef has the same property, so you don't need a mnemonic to learn the notes. For the notes on the lines, start from a marked button (A♭, C, or E) and work up and down in whole tones. For the notes in the spaces, start from the F or G and work up and down in whole tones.
 
@@ -102,7 +101,7 @@ c4^"root" s2 \maj c4^"Major" s2 \min c4^"minor" s2 \sev c4^"7" s2 \dimin c4^"dim
 ```
 </Snippet>
 
-The most obvious thing is that they use **colour** to convey the information. The colours are from a standard set that's designed to be maximally distinguishable for people with different kinds of colour-blindness. Even so, some people can't see colours at all, so the same information is also conveyed by the **shape** of the notehead. And since the notehead is significant, here they are as whole notes (semibreves) with their unfilled noteheads:
+The most obvious thing is that they use **colour** to convey the information. The colours are from a standard set that's designed to be maximally distinguishable for people with different kinds of colour-blindness. Even so, some people can't see colours at all, so the same information is also conveyed by the **shape** of the notehead. Here's what the noteheads look like as whole notes (semibreves) with their unfilled noteheads:
 
 <Snippet>
 ```lilypond
@@ -111,7 +110,7 @@ c1^"root" \maj c^"M" \min c^"m" \sev c^"7" \dimin c^"dim"
 ```
 </Snippet>
 
-Unlike the arrangement on the staff, this *is* something you have to learn, so I'll share the inspiration behind each one and perhaps that'll help you remember, but you can use whatever associations **make sense to you**.
+Unlike the arrangement on the staff, this *is* something you have to learn, so I'll share the inspiration behind each one and perhaps that'll help you remember, but you can use whatever associations **make sense to you**. Like Every Good Boy Deserves Football, you only need the harmonic while you're practising: you won't use it when you've learned the notation.
 
 ### Major
 
@@ -129,7 +128,7 @@ The upright triangle here is based on the △ symbol comonly used in jazz sheets
 
 ### Diminished
 
-Diminished chords are the rarest, so how fitting they should be represented by a gem shape, and the pinkish colour that will make sure you see that one's coming up.
+Diminished chords are the rarest, so how fitting they should be represented by a diamond, and the pinkish colour that will make sure you see that one's coming up.
 
 ## Counter-bass
 
@@ -280,7 +279,7 @@ With Stradella clef, this is now a basic technique, because you don't have to le
 
 It might look a little weird at first, because it's something completely new. Still, all you have to do is play the buttons it tells you.
 
-Also, music often wants you to play a root note at the same time as the same chord. Of course, that works too. This might be the first time you've seen two noteheads on the same stem in a chord, but it's commonplace in Stradella clef.
+Also, music often wants you to play a root note at the same time as the same chord. Of course, that works too. This might be the first time you've seen two noteheads on the same stem in a chord, but it's common in Stradella clef.
 
 <Snippet>
 ```lilypond
@@ -289,8 +288,19 @@ Also, music often wants you to play a root note at the same time as the same cho
 ```
 </Snippet>
 
-Whether this is useful or not depends on whether the register has a different octave for the root notes compared to the chords: on some instruments they just sound the same reeds, others have different reeds for the root notes.
+Whether this is useful or not depends on whether the register has a different octave for the root notes compared to the chords: on some instruments they just sound the same reeds, so playing C and C major sounds no different to playing C major alone.
 
 ## Next steps
 
-Now you've learned everything about Stradella clef, you just need to 
+Now you've learned everything about Stradella clef, you just need to practise.
+
+<Cta actions={[
+    {
+        text: 'Download example sheets to play',
+        path: 'examples'
+    },
+    {
+        text: 'Make your own sheets with LilyPond',
+        path: 'lilypond'
+    }
+]} />

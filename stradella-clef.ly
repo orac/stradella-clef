@@ -96,7 +96,7 @@
               (intervals . ,(list stradella-unison))))
      (counterbass . ((fifths . -4)
                      (colour . "#117733")
-                     (style . #f)
+                     (style . doFunk)
                      (mark . #f)
                      (intervals . ,(list stradella-unison))))
      (major . ((fifths . 0)
@@ -122,7 +122,7 @@
                                      stradella-minor-seventh))))
      (diminished . ((fifths . 0)
                     (colour . "#aa4499")
-                    (style . tiThin)
+                    (style . harmonic)
                     (mark . "d")
                     (intervals . ,(list stradella-unison
                                         stradella-minor-third

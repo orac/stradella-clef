@@ -53,16 +53,18 @@ ${code}
 `
   : String.raw`${preamble}
 \new StradellaStaff {
+\override Staff.TimeSignature.stencil = ##f
 ${code}
 }
 `;
 
 async function engrave() {
   const dir = await mkdtemp(join(tmpdir(), 'snippet-'));
-  let log = '';
+  let stdout = '';
+  let stderr = '';
   try {
     await writeFile(join(dir, 'snippet.ly'), source);
-    ({ stderr: log } = await promisify(execFile)(
+    ({ stdout, stderr } = await promisify(execFile)(
       process.env.LILYPOND ?? 'lilypond',
       ['-dbackend=svg', '-dcrop', '-dno-point-and-click', '-I', repoRoot, 'snippet.ly'],
       { cwd: dir },
@@ -70,7 +72,9 @@ async function engrave() {
     // LilyPond can exit cleanly without drawing anything, so a missing SVG is reported with the log.
     return await readFile(join(dir, 'snippet.cropped.svg'), 'utf8');
   } catch (e: any) {
-    throw new Error(`LilyPond couldn't engrave this snippet:\n${code}\n\n${e.stderr ?? `${e.message}\n${log}`}`);
+    // execFile's own rejection carries stdout/stderr from the failed run; a missing-SVG rejection from readFile doesn't, so it falls back to the (successful) run's own output above.
+    const log = [e.stdout || stdout, e.stderr || stderr].filter(Boolean).join('\n') || e.message;
+    throw new Error(`LilyPond couldn't engrave this snippet:\n${code}\n\n${log}`);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
@@ -144,11 +148,15 @@ if (code.trim()) {
     max-width: 100%;
     height: auto;
   }
-  /* Set by the script below once a snippet's true 1.5x width would outgrow the column: rather than shrink it back down to fit, let it run the full width of the viewport, centred. */
-  .snippet--overflow {
+  /* A snippet sits in the text column, left-aligned with the prose. Set by the script below once its true 1.5x width would outgrow that column: rather than shrink it back down to fit, let it grow to the wide track, or failing that the full width of the viewport, centred. */
+  .snippet--wide {
+    grid-column: wide;
+  }
+  .snippet--full {
     grid-column: full;
   }
-  .snippet--overflow :global(svg) {
+  .snippet--wide :global(svg),
+  .snippet--full :global(svg) {
     margin-inline: auto;
   }
   .snippet-error {
@@ -167,7 +175,11 @@ if (code.trim()) {
     const svg = container.querySelector(':scope > svg') as SVGSVGElement | null;
     if (!svg) return;
     const naturalWidth = svg.width.baseVal.value * 1.5;
-    container.classList.toggle('snippet--overflow', naturalWidth > container.clientWidth);
+    container.classList.remove('snippet--wide', 'snippet--full');
+    if (naturalWidth <= container.clientWidth) return;
+    container.classList.add('snippet--wide');
+    if (naturalWidth <= container.clientWidth) return;
+    container.classList.replace('snippet--wide', 'snippet--full');
   }
 
   const snippets = document.querySelectorAll('.snippet');
